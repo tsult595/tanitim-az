@@ -30,10 +30,13 @@ const Header = () => {
           </Link>
 
           {/* Дропдаун для Xidmətlərimiz */}
-          <div className="relative group cursor-pointer flex items-center gap-1 hover:text-orange-500 transition-colors py-2">
+          {/* <div className="relative group cursor-pointer flex items-center gap-1 hover:text-orange-500 transition-colors py-2">
             <span>Xidmətlərimiz</span>
             <ChevronDown className="w-4 h-4 text-orange-700 group-hover:text-slate-900 transition-transform group-hover:rotate-180 duration-200" />
-          </div>
+          </div> */}
+           <Link href="/services" className="hover:text-orange-500 transition-colors">
+            Xidmətlərimiz
+          </Link>
 
           <Link href="/clients" className="hover:text-orange-500 transition-colors">
             Müştərilər
@@ -47,9 +50,7 @@ const Header = () => {
             Bloq
           </Link>
 
-          <Link href="/connection" className="hover:text-orange-500 transition-colors">
-            Əlaqə
-          </Link>
+         
         </nav>
 
         <div className="flex items-center gap-4 shrink-0">

@@ -1,6 +1,6 @@
 'use client'
 
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup , ZoomControl } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -35,8 +35,11 @@ const Map = () => {
       center={[40.376, 49.845]} // Центр между двумя точками
       zoom={13}
       scrollWheelZoom={false}
+      zoomControl={false}
       className="w-full h-full rounded-2xl z-0"
     >
+       <ZoomControl position="topright" /> 
+       
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
