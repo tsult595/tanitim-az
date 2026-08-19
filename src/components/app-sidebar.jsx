@@ -27,6 +27,7 @@ import {
 const navItems = [
   { title: "Dashboard", url: "/admin/dashboard", icon: LayoutDashboard },
   { title: "Müraciətlər", url: "/admin/contacts", icon: Mail },
+  { title: "Tərcümələr", url: "/admin/translations", icon: Settings },
   { title: "Xidmətlər", url: "/admin/services", icon: BriefcaseBusiness },
   { title: "İstifadəçilər", url: "/admin/users", icon: Users },
   { title: "Blog", url: "/admin/blog", icon: FileText },
