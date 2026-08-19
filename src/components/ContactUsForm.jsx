@@ -10,13 +10,8 @@ const FormContent = () => {
   const [message, setMessage] = useState("")
   const [file, setFile] = useState(null)
 
-  // 1. Синхронизация с URL searchParams
-  useEffect(() => {
-    const paramSubject = searchParams.get("subject")
-    if (paramSubject) {
-      setSubject(paramSubject)
-    }
-  }, [searchParams])
+ 
+
 
   // 2. Подписка на CustomEvent для мгновенного обновления
   useEffect(() => {

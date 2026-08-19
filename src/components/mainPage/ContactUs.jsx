@@ -11,9 +11,9 @@ const Map = dynamic(() => import('@/components/Map'), {
 const ContactUs = () => {
   return (
     <div id="contact-section" className="w-full flex flex-col py-6 scroll-mt-10">
-      <h1 className="text-xl sm:text-3xl font-bold text-slate-950 tracking-tight mb-6 text-center">
-        Bizimlə Əlaqə
-      </h1>
+      <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight mb-5">
+     Bizimlə Əlaqə
+     </h2>
       
       <div className="relative w-full min-h-[520px] rounded-3xl overflow-hidden shadow-xl border border-slate-200">
         <div className="absolute inset-0 z-0">

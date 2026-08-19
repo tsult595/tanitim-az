@@ -31,7 +31,10 @@ const ServicePageCards = () => {
   };
 
   return (
-    <div className="w-full py-6">
+    <div className="w-full py-4">
+    <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight mb-5">
+    Xidmətlərimiz
+    </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {cardsData.map((card) => (
           <div
