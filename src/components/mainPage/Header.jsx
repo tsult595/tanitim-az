@@ -57,13 +57,6 @@ const Header = () => {
           </div>
 
           <div 
-            onClick={() => scrollToSection('contact-section')}
-            className="relative group cursor-pointer flex items-center gap-1 hover:text-orange-500 transition-colors py-2"
-          >
-            <span>Əlaqə</span>
-          </div>
-
-          <div 
             onClick={() => scrollToSection('clients-section')}
             className="relative group cursor-pointer flex items-center gap-1 hover:text-orange-500 transition-colors py-2"
           >
@@ -82,6 +75,13 @@ const Header = () => {
             className="relative group cursor-pointer flex items-center gap-1 hover:text-orange-500 transition-colors py-2"
           >
             <span>Bloq</span>
+          </div>
+
+           <div 
+            onClick={() => scrollToSection('contact-section')}
+            className="relative group cursor-pointer flex items-center gap-1 hover:text-orange-500 transition-colors py-2"
+          >
+            <span>Əlaqə</span>
           </div>
 
         </nav>
