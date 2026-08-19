@@ -1,5 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
-import Header from "../components/mainPage/Header.jsx"; // Импортируй свой Header
+import Header from "../components/mainPage/Header.jsx";
+import Footer from "@/components/mainPage/Footer.jsx";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,16 +22,19 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="az"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} scroll-smooth antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-slate-50">
-        {/* Header на 100% ширины экрана */}
+      <body className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
+        {/* Header во всю ширину */}
         <Header />
 
-        {/* Контент страницы */}
+        {/* Контент страницы занимает всё свободное место */}
         <main className="flex-1 w-full">
           {children}
         </main>
+
+        {/* Footer во всю ширину внизу */}
+        <Footer />
       </body>
     </html>
   );

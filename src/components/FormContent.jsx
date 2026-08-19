@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, Suspense } from "react"
+import React, { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import { Paperclip, Send } from "lucide-react"
 
@@ -10,10 +10,7 @@ const FormContent = () => {
   const [message, setMessage] = useState("")
   const [file, setFile] = useState(null)
 
- 
-
-
-  // 2. Подписка на CustomEvent для мгновенного обновления
+  // Подписка на CustomEvent для мгновенного обновления
   useEffect(() => {
     const handleSelectService = (e) => {
       if (e.detail?.title) {
@@ -35,7 +32,6 @@ const FormContent = () => {
     console.log({
       name: e.target.name.value,
       phone: e.target.phone.value,
-      address: e.target.address.value,
       subject,
       message,
       file,
@@ -64,18 +60,6 @@ const FormContent = () => {
           id="phone"
           name="phone"
           type="tel"
-          className="h-[32px] w-full rounded-[4px] border border-gray-300 bg-white px-2 text-[12px] text-gray-800 outline-none transition focus:border-gray-500 focus:ring-1 focus:ring-gray-200"
-        />
-      </div>
-
-      <div>
-        <label htmlFor="address" className="mb-1 block text-[12px] font-medium text-gray-600">
-          Ünvan
-        </label>
-        <input
-          id="address"
-          name="address"
-          type="text"
           className="h-[32px] w-full rounded-[4px] border border-gray-300 bg-white px-2 text-[12px] text-gray-800 outline-none transition focus:border-gray-500 focus:ring-1 focus:ring-gray-200"
         />
       </div>
@@ -145,17 +129,4 @@ const FormContent = () => {
   )
 }
 
-const ContactUsForm = () => {
-  return (
-    <div className="w-full max-w-[420px] rounded-xl border border-gray-200 bg-white p-4 shadow-md z-20">
-      <h2 className="mb-3 text-[18px] font-semibold text-gray-800">
-        Bizimlə əlaqə
-      </h2>
-      <Suspense fallback={<div className="text-xs text-gray-400">Yüklənir...</div>}>
-        <FormContent />
-      </Suspense>
-    </div>
-  )
-}
-
-export default ContactUsForm;
+export default FormContent

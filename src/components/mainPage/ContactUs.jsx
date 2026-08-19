@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic';
-import ContactUsForm from "@/components/ContactUsForm";
+import ContactUsForm from "@/components/mainPage/ContactUsForm";
 
 const Map = dynamic(() => import('@/components/Map'), { 
   ssr: false,

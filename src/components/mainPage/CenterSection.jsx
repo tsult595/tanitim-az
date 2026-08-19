@@ -1,4 +1,4 @@
-import ServicePageCards from "../ServicePageCards";
+import ServicePageCards from "./ServicePageCards";
 import MainPageBlogPage from "./MainPageBlogPage";
 import ContactUs from "./ContactUs";
 

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import Img1 from '../../public/test.png';
+import Img1 from '../../../public/test.png';
 
 const ServicePageCards = () => {
   const cardsData = [
@@ -18,12 +18,12 @@ const ServicePageCards = () => {
   ];
 
   const handleCardClick = (title) => {
-    // 1. Передаем заголовок в форму через CustomEvent
+   
     window.dispatchEvent(
       new CustomEvent("selectService", { detail: { title } })
     );
 
-    // 2. Автоматически скроллим к форме
+    
     const contactElement = document.getElementById("contact-section");
     if (contactElement) {
       contactElement.scrollIntoView({ behavior: "smooth" });
@@ -31,7 +31,7 @@ const ServicePageCards = () => {
   };
 
   return (
-    <div className="w-full py-4">
+    <div id="services-section" className="w-full py-4">
     <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight mb-5">
     Xidmətlərimiz
     </h2>
