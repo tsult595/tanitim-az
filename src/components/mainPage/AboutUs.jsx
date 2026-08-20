@@ -1,6 +1,6 @@
 'use client'
 
-import { Play } from "lucide-react";
+import Link from "next/link";
 
 const avatars = [
   "https://i.pravatar.cc/64?img=12",
@@ -10,7 +10,7 @@ const avatars = [
 
 const AboutUs = () => {
   return (
-    <section className="relative w-full overflow-hidden rounded-3xl bg-[#F7F5F2]">
+    <section id="about-section" className="relative w-full overflow-hidden rounded-3xl bg-[#F7F5F2]">
       {/* Мягкий градиентный меш-фон в цветах бренда */}
       <div className="absolute inset-0">
         <div className="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-[#F0692A]/25 blur-[90px]" />
@@ -72,9 +72,17 @@ const AboutUs = () => {
         {/* Кнопки */}
         <div className="mt-9 flex items-center gap-3">
         
-          <button className="rounded-full border border-[#1F1F1E]/20 bg-white text-[#1F1F1E] text-sm font-semibold px-6 py-3 hover:border-[#1F1F1E]/40 transition-colors">
-            Xidmətlərə baxın
-          </button>
+          <a 
+      href="#services-section" 
+     className="inline-block rounded-full border border-[#1F1F1E]/20 bg-white text-[#1F1F1E] text-sm font-semibold px-6 py-3 hover:border-[#1F1F1E]/40 transition-colors cursor-pointer"
+       >
+      Xidmətlərə baxın
+      </a>
+    <Link href="/aboutUsDetail">
+    <button className="inline-block rounded-full border border-[#1F1F1E]/20 bg-white text-[#1F1F1E] text-sm font-semibold px-6 py-3 hover:border-[#1F1F1E]/40 transition-colors cursor-pointer">
+     Ətraflı
+    </button>
+    </Link>
         </div>
       </div>
     </section>

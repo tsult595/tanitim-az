@@ -37,7 +37,7 @@ const MainPageBlogPage = () => {
       {/* Заголовок секции */}
       
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
+        <h2 className="text-2xl md:text-3xl text-slate-900 tracking-tight">
           Son Məqalələr
         </h2>
         <Link

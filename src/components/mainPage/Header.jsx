@@ -32,9 +32,9 @@ const Header = () => {
             alt="Tanitim.az Logo"
             width={45}
             height={45}
-            className="w-16 h-16 object-contain rounded-lg"
+            className="w-20 h-20 object-contain rounded-lg"
           />
-          <span className="text-xl font-black tracking-tight text-slate-900 transition-colors">
+          <span className="text-xl  tracking-tight text-slate-900 transition-colors">
             TANITIM<span className="text-orange-400">.AZ</span>
           </span>
         </Link>

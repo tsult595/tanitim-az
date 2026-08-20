@@ -6,7 +6,7 @@ import ContactUsForm from "@/components/mainPage/ContactUsForm";
 const ContactUs = () => {
   return (
     <section id="contact-section" className="w-full flex flex-col py-6 scroll-mt-24">
-      <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight mb-5">
+      <h2 className="text-2xl md:text-3xl text-slate-900 tracking-tight mb-5">
         Bizimlə Əlaqə
       </h2>
       
