@@ -3,7 +3,7 @@ import MainComponent from "@/components/mainPage/MainComponent.jsx";
 
 export default function Home() {
   return (
-    <div className="container w-full flex items-center justify-center p-4">
+    <div className="w-full">
       <Suspense>
         <MainComponent />
       </Suspense>

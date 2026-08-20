@@ -71,9 +71,7 @@ const AboutUs = () => {
 
         {/* Кнопки */}
         <div className="mt-9 flex items-center gap-3">
-          <button className="rounded-full bg-[#1F1F1E] text-white text-sm font-semibold px-6 py-3 hover:bg-[#3C3C3B] transition-colors">
-            Başlayaq
-          </button>
+        
           <button className="rounded-full border border-[#1F1F1E]/20 bg-white text-[#1F1F1E] text-sm font-semibold px-6 py-3 hover:border-[#1F1F1E]/40 transition-colors">
             Xidmətlərə baxın
           </button>

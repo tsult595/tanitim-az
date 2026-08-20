@@ -55,7 +55,7 @@ const BlogPage = () => {
   ];
 
   return (
-    <div className="min-h-screen p-6 md:p-12 max-w-7xl mx-auto">
+    <div className="min-h-screen pt-24 md:pt-32 pb-12 px-6 md:px-12 max-w-7xl mx-auto">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {postsData.map((post) => (
           <article

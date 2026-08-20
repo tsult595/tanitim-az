@@ -4,7 +4,7 @@ import { FaLinkedin, FaYoutube, FaInstagram, FaTiktok } from "react-icons/fa6";
 const Footer = () => {
   return (
     <footer className="w-full bg-orange-100/40 text-slate-900 pt-12 pb-10">
-      <div className="max-w-7xl mx-auto px-6 sm:px-10">
+      <div className="max-w-6xl mx-auto px-6 sm:px-10">
         
         {/* Колонки футера */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">

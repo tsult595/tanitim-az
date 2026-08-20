@@ -24,7 +24,7 @@ const products = [
 
 const Products = () => {
   return (
-    <section id='products-section' className="w-full  py-16 sm:py-20">
+    <section id='products-section' className="w-full py-16 sm:py-20">
       {/* Тонкая полоса — палитра как деталь */}
       <div className="flex h-1.5 w-full">
         {["#F0692A", "#3C3C3B", "#E4D6CE", "#F5AD82", "#9C9C9C", "#F0692A"].map(

@@ -4,7 +4,7 @@ import CenterSection from "./CenterSection.jsx";
 
 const MainComponent = () => {
   return (
-    <main className="flex min-h-screen w-full max-w-6xl mx-auto flex-col px-4">
+    <main className="flex min-h-screen w-full flex-col">
       <CenterSection/>
     </main>
   )

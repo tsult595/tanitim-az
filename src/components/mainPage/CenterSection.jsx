@@ -7,7 +7,7 @@ import AboutUs from "./AboutUs";
 
 function CenterSection() {
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 py-8">
+    <div className="mx-auto w-full max-w-6xl space-y-12 px-4 py-8 sm:px-6 lg:px-8">
       <AboutUs />  
       <ServicePageCards />
       <MainPageBlogPage />
