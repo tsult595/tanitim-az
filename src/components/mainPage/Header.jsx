@@ -23,7 +23,7 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-slate-50/80 backdrop-blur-md border-b border-slate-200/60">
-      <div className="w-full px-4 sm:px-8 h-20 flex items-center justify-between gap-4 md:gap-8 lg:gap-12 max-w-7xl mx-auto">
+      <div className="w-full px-4 sm:px-8 h-20 flex items-center justify-between gap-4 md:gap-8 lg:gap-12 max-w-6xl mx-auto">
 
         {/* 1. Логотип (слева) */}
         <Link href="/" className="flex items-center gap-3 group shrink-0">
