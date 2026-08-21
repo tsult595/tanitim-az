@@ -3,10 +3,16 @@ import Footer from "@/components/mainPage/Footer.jsx";
 
 export default function MainLayout({ children }) {
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900">
+    <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
+
       <Header />
-      <main className="flex-1 w-full">{children}</main>
+
+      <main className="w-full flex-1">
+        {children}
+      </main>
+
       <Footer />
+
     </div>
   );
 }
