@@ -1,7 +1,7 @@
 ---
-
 import AboutSection from './AboutSection.astro'; 
 import Header from './Header.astro';
+import ServicesSection from './ServicesSection.astro';
 
 interface Props {
   class?: string;
@@ -10,14 +10,11 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<section class:list={["relative w-full h-screen overflow-hidden", className]}>
+<section class:list={["relative w-full min-h-screen flex flex-col justify-between overflow-hidden", className]}>
   <Header class="pointer-events-auto fixed top-0 right-0 left-0 z-50 p-6 sm:p-10" />
-  <div class="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-    <div 
-      class="h-full w-full bg-cover bg-center"
-      style="background-image: url('/test.avif');"
-    >
-    </div>
-  </div>
-  <AboutSection class="relative z-10 flex mt-20 w-full flex-col justify-between p-6 sm:p-10 sm:pt-36" />
+  
+  <main class="flex-1 w-full pt-28 sm:pt-36 flex items-center">
+    <AboutSection class="relative z-10 flex w-full flex-col justify-between p-6 sm:p-10" />
+    <ServicesSection class="w-full relative z-10" />
+  </main>
 </section>

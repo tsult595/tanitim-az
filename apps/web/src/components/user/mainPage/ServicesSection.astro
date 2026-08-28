@@ -1,0 +1,31 @@
+---
+import Card from '../Card.astro';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<section id="services-section" class:list={["max-w-7xl mx-auto px-4 py-20", className]}>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <Card 
+      title="Веб-Разработка" 
+      description="Создаем быстрые сайты на Astro и Next.js."
+      badge="Popular"
+    >
+      <button class="text-xs font-bold text-orange-400 hover:underline cursor-pointer bg-transparent border-none p-0">
+        Подробнее →
+      </button>
+    </Card>
+
+    <Card 
+      title="Мобильные Приложения" 
+      description="Разработка под iOS и Android на React Native."
+      class="bg-gradient-to-b from-orange-500/10 to-transparent border-orange-500/30"
+    >
+      <span class="text-xs text-slate-400">Сроки: от 2 недель</span>
+    </Card>
+  </div>
+</section>
