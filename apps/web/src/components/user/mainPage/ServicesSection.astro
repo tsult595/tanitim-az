@@ -6,26 +6,69 @@ interface Props {
 }
 
 const { class: className } = Astro.props;
+
+// Лучшая практика: выносить данные элементов в чистый массив
+const services = [
+  {
+    title: "Veb-Tərtibat",
+    description: "Astro və Next.js ilə sürətli, müasir və SEO təmizliyinə malik veb-saytların hazırlanması.",
+    badge: "Popular",
+    type: "button",
+    actionText: "Ətraflı →"
+  },
+  {
+    title: "Mobil Tətbiqlər",
+    description: "React Native ilə iOS və Android platformaları üçün yüksək performanslı tətbiqlər.",
+    type: "info",
+    actionText: "Müddət: 2 həftədən başlayan"
+  },
+  {
+    title: "UI/UX Dizayn",
+    description: "İstifadəçilər üçün rahat, cəlbedici və müasir interfeys dizaynlarının hazırlanması.",
+    type: "info",
+    actionText: "Müddət: 1 həftədən başlayan"
+  }
+];
 ---
 
-<section id="services-section" class:list={["max-w-7xl mx-auto px-4 py-20", className]}>
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    <Card 
-      title="Веб-Разработка" 
-      description="Создаем быстрые сайты на Astro и Next.js."
-      badge="Popular"
-    >
-      <button class="text-xs font-bold text-orange-400 hover:underline cursor-pointer bg-transparent border-none p-0">
-        Подробнее →
-      </button>
-    </Card>
+<!-- Внешняя секция занимает всю ширину страницы -->
+<section id="services-section" class:list={["py-12 sm:py-20", className]}>
+  <!-- Внутренний контейнер ограничивает ширину и центрирует контент -->
+  <div class="max-w-7xl mx-auto px-6 sm:px-10 bg-amber-500">
+    
+    <!-- Заголовок секции (опционально) -->
+    <div class="mb-10 text-center sm:text-left">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        Xidmətlərimiz
+      </h2>
+      <p class="mt-3 text-sm sm:text-base text-slate-400 max-w-2xl">
+        Biznesinizi rəqəmsal dünyada önə çıxaracaq peşəkar xidmətlər spektri.
+      </p>
+    </div>
 
-    <Card 
-      title="Мобильные Приложения" 
-      description="Разработка под iOS и Android на React Native."
-      class="bg-gradient-to-b from-orange-500/10 to-transparent border-orange-500/30"
-    >
-      <span class="text-xs text-slate-400">Сроки: от 2 недель</span>
-    </Card>
+    <!-- Адаптивная сетка карточек -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+      {services.map((service) => (
+        <Card 
+          title={service.title} 
+          description={service.description}
+          badge={service.badge}
+        >
+          {service.type === "button" ? (
+            <button 
+              type="button" 
+              class="text-xs font-bold text-orange-400 hover:text-orange-300 hover:underline cursor-pointer bg-transparent border-none p-0 transition-colors"
+            >
+              {service.actionText}
+            </button>
+          ) : (
+            <span class="text-xs text-slate-400 font-medium">
+              {service.actionText}
+            </span>
+          )}
+        </Card>
+      ))}
+    </div>
+
   </div>
 </section>
