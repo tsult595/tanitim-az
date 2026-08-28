@@ -13,7 +13,7 @@ const { class: className } = Astro.props;
 <section class:list={["relative w-full min-h-screen flex flex-col justify-between overflow-hidden", className]}>
   <Header class="pointer-events-auto fixed top-0 right-0 left-0 z-50 p-6 sm:p-10" />
   
-  <main class="flex-1 w-full pt-28 sm:pt-36 flex items-center">
+  <main class="flex-1 w-full pt-28 sm:pt-36 flex items-center flex-col justify-center gap-20 sm:gap-32">
     <AboutSection class="relative z-10 flex w-full flex-col justify-between p-6 sm:p-10" />
     <ServicesSection class="w-full relative z-10" />
   </main>
