@@ -93,11 +93,12 @@ const products: Product[] = [
             </p>
             {product.buttonText && product.href && (
              <a
-     href={product.href}
-     class="
+     
+  href={product.href}
+  class="
     w-fit
     items-center
-    gap-2
+    gap-3
     rounded-lg
     bg-[#FE7930]
     px-10
@@ -107,14 +108,28 @@ const products: Product[] = [
     text-white
     transition-all
     hover:scale-105
+    flex
   "
 >
   {product.buttonText}
-
+  <svg
+    class="w-4 h-4 text-white transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 duration-200"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M7 17L17 7M17 7H7M17 7V17"
+    />
+  </svg>
 </a>
+    
             )}
           </div>
-
+         
         </div>
       ))
     }
