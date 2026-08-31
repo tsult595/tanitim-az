@@ -1,0 +1,86 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  badge?: string;
+  icon?: string;
+  variant?: 'gray' | 'peach' | 'orange';
+  class?: string;
+}
+
+const { 
+  title, 
+  description, 
+  badge, 
+  icon, 
+  variant = 'gray', 
+  class: className 
+} = Astro.props;
+
+const variantStyles = {
+  gray: {
+    card: "bg-[#F4F4F5] text-gray-900 border-transparent",
+    iconBg: "bg-orange-500/10 text-orange-600",
+    badge: "bg-black/5 text-gray-700 border-black/10"
+  },
+  peach: {
+    card: "bg-[#FFE8D6] text-gray-900 border-transparent",
+    iconBg: "bg-orange-500/15 text-orange-600",
+    badge: "bg-orange-900/10 text-orange-950 border-orange-900/10"
+  },
+  orange: {
+    card: "bg-[#FF8A50] text-white border-transparent",
+    iconBg: "bg-white/20 text-white",
+    badge: "bg-white/20 text-white border-white/30"
+  }
+};
+
+const currentTheme = variantStyles[variant];
+---
+
+<div 
+  class:list={[
+    "relative flex flex-col justify-between w-full p-5 sm:p-6 md:p-7 lg:p-8 rounded-2xl sm:rounded-3xl min-h-[220px] sm:min-h-[260px] md:min-h-[280px] lg:min-h-[300px]",
+    currentTheme.card,
+    "transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-orange-500/10",
+    className
+  ]}
+>
+  <!-- Беджик -->
+  {badge && (
+    <span class:list={[
+      "absolute top-5 right-5 sm:top-6 sm:right-6 px-2.5 py-1 sm:px-3 sm:py-1 rounded-full text-xs font-semibold border",
+      currentTheme.badge
+    ]}>
+      {badge}
+    </span>
+  )}
+
+  <!-- Верхняя иконка в округлом контейнере -->
+  <div class="flex items-start">
+    {icon && (
+      <div class:list={[
+        "flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl",
+        currentTheme.iconBg
+      ]}>
+        <Fragment set:html={icon} />
+      </div>
+    )}
+  </div>
+
+  <!-- Контент -->
+  <div class="mt-6 sm:mt-8 flex-1 flex flex-col justify-end">
+    <h3 class="text-lg sm:text-xl md:text-2xl tracking-tight leading-snug font-semibold">
+      {title}
+    </h3>
+    
+    {description && (
+      <p class:list={[
+        "mt-2 text-sm leading-relaxed",
+        variant === 'orange' ? "text-white/90" : "text-gray-600"
+      ]}>
+        {description}
+      </p>
+    )}
+  </div>
+</div>

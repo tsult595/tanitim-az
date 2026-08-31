@@ -2,6 +2,7 @@
 import Header from './Header.astro';
 import AboutSection from './AboutSection.astro'; 
 import ServicesSection from './ServicesSection.astro';
+import ProductsSection from './ProductsSection.astro';
 
 interface Props {
   class?: string;
@@ -10,10 +11,14 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<section class:list={["relative w-full min-h-screen flex flex-col gap-7 justify-between overflow-hidden", className]}>
-  <Header class="w-full pointer-events-auto fixed top-0 right-0 left-0 z-50 p-6 sm:p-10" />
-  <main class="flex-1 w-full pt-28 sm:pt-36 flex flex-col items-center justify-start gap-20 sm:gap-32">
-    <AboutSection class="w-full relative z-10" />
-    <ServicesSection class="w-full relative z-10" />
-  </main>
+<section class:list={["relative w-full min-h-screen flex flex-col overflow-hidden", className]}>
+  <Header class="w-full pointer-events-auto fixed top-0 right-0 left-0 z-50" />
+
+ <main class="flex-1 pt-20 sm:pt-24 md:pt-28 lg:pt-36">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 xl:px-0">
+    <AboutSection />
+    <ServicesSection class="mt-20" />
+    <ProductsSection class="mt-20" />
+  </div>
+</main>
 </section>

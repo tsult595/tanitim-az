@@ -6,10 +6,10 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<header class:list={["h-20 sm:px-1", className]}>
-  <nav class="max-w-7xl mx-auto w-full h-full flex items-center justify-between text-white">
+<header class:list={["h-16 sm:h-20 px-4 sm:px-6 lg:px-1", className]}>
+  <nav class="max-w-7xl mx-auto w-full h-full flex items-center justify-between">
     <!-- Логотип -->
-    <div class="h-9 w-25">
+    <div class="h-8 w-20 sm:h-9 sm:w-25 flex-shrink-0">
       <img
         src="/tanitim_logo.png"
         alt="Logo"
@@ -17,87 +17,139 @@ const { class: className } = Astro.props;
       />
     </div>
 
-    <!-- Ссылки с плавной прокруткой -->
-    <div class="flex-1 hidden items-center justify-center gap-8 md:flex text-sm font-medium">
-      <button 
-        type="button" 
-        data-scroll="about-section" 
-        class="hover:text-orange-500 text-sm text-slate-700 transition-colors cursor-pointer bg-transparent border-none p-0"
-      >
+    <!-- Десктоп-меню -->
+    <div class="flex-1 hidden items-center justify-center gap-6 lg:gap-8 md:flex text-sm font-medium">
+      <button type="button" data-scroll="about-section" class="hover:text-[#FE7930] text-sm text-slate-700 transition-colors cursor-pointer bg-transparent border-none p-0">
         Haqqımızda
       </button>
-
-      <button 
-        type="button" 
-        data-scroll="services-section" 
-        class="hover:text-orange-500 text-sm text-slate-700 transition-colors cursor-pointer bg-transparent border-none p-0"
-      >
+      <button type="button" data-scroll="services-section" class="hover:text-[#FE7930] text-sm text-slate-700 transition-colors cursor-pointer bg-transparent border-none p-0">
         Xidmətlər
       </button>
-
-      <button 
-        type="button" 
-        data-scroll="clients-section" 
-        class="hover:text-orange-500 text-sm text-slate-700 transition-colors cursor-pointer bg-transparent border-none p-0"
-      >
+      <button type="button" data-scroll="clients-section" class="hover:text-[#FE7930] text-sm text-slate-700 transition-colors cursor-pointer bg-transparent border-none p-0">
         Müştərilər
       </button>
-
-      <button 
-        type="button" 
-        data-scroll="products-section" 
-        class="hover:text-orange-500 text-sm text-slate-700 transition-colors cursor-pointer bg-transparent border-none p-0"
-      >
+      <button type="button" data-scroll="products-section" class="hover:text-[#FE7930] text-sm text-slate-700 transition-colors cursor-pointer bg-transparent border-none p-0">
         Məhsullar
       </button>
-
-      <button 
-        type="button" 
-        data-scroll="contact-section" 
-        class="hover:text-orange-500 text-sm text-slate-700 transition-colors cursor-pointer bg-transparent border-none p-0"
-      >
+      <button type="button" data-scroll="contact-section" class="hover:text-[#FE7930] text-sm text-slate-700 transition-colors cursor-pointer bg-transparent border-none p-0">
         Əlaqə
       </button>
-
-      <button
-        type="button"
-        data-scroll="contact-section"
-        class="rounded-full bg-[#F0692A] px-5 py-2.5 text-sm font-bold text-black transition-transform hover:scale-105 active:scale-95 select-none cursor-pointer border-none"
-      >
-        Sifariş et
+      <button type="button" data-scroll="contact-section" class="rounded-full bg-[#FE7930] px-5 py-2.5 text-sm font-bold text-white transition-transform hover:scale-105 active:scale-95 select-none cursor-pointer border-none">
+        Blog
       </button>
     </div>
 
-   
-     <div class="relative group py-2">
-      <button type="button" class="flex items-center gap-1 text-sm font-semibold text-slate-800 hover:text-orange-500 transition-colors cursor-pointer bg-transparent border-none p-0">
-        <span>AZ</span>
-        <svg class="w-3.5 h-3.5 text-orange-700 group-hover:text-slate-900 transition-transform group-hover:rotate-180 duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-        </svg>
-      </button>
+    <!-- Правый блок: язык + бургер -->
+    <div class="flex items-center gap-3">
+      <div class="relative group py-2 hidden sm:block">
+        <button type="button" class="flex items-center gap-1 text-sm font-semibold text-slate-800 hover:text-orange-500 transition-colors cursor-pointer bg-transparent border-none p-0">
+          <span>AZ</span>
+          <svg class="w-3.5 h-3.5 text-orange-700 group-hover:text-slate-900 transition-transform group-hover:rotate-180 duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
 
-      <div class="absolute right-0 top-full hidden group-hover:flex flex-col bg-white border border-slate-200/80 rounded-xl shadow-lg p-1.5 min-w-[70px] z-50">
-        <button type="button" class="px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-orange-500 hover:bg-slate-50 rounded-lg text-left transition-colors cursor-pointer bg-transparent border-none">
-          RU
-        </button>
-        <button type="button" class="px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-orange-500 hover:bg-slate-50 rounded-lg text-left transition-colors cursor-pointer bg-transparent border-none">
-          EN
-        </button>
+        <div class="absolute right-0 top-full hidden group-hover:flex flex-col bg-white border border-slate-200/80 rounded-xl shadow-lg p-1.5 min-w-[70px] z-50">
+          <button type="button" class="px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-orange-500 hover:bg-slate-50 rounded-lg text-left transition-colors cursor-pointer bg-transparent border-none">
+            RU
+          </button>
+          <button type="button" class="px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-orange-500 hover:bg-slate-50 rounded-lg text-left transition-colors cursor-pointer bg-transparent border-none">
+            EN
+          </button>
+        </div>
       </div>
-    </div> 
+
+      <!-- Бургер-кнопка (только мобилка) -->
+      <button
+        type="button"
+        id="burger-btn"
+        aria-label="Menu"
+        aria-expanded="false"
+        class="md:hidden flex flex-col justify-center items-center w-9 h-9 gap-1.5 bg-transparent border-none cursor-pointer"
+      >
+        <span class="burger-line block w-6 h-0.5 bg-slate-800 transition-transform duration-300"></span>
+        <span class="burger-line block w-6 h-0.5 bg-slate-800 transition-opacity duration-300"></span>
+        <span class="burger-line block w-6 h-0.5 bg-slate-800 transition-transform duration-300"></span>
+      </button>
+    </div>
   </nav>
+
+  <!-- Мобильное меню (drawer) -->
+  <div
+    id="mobile-menu"
+    class="md:hidden fixed inset-x-0 top-16 sm:top-20 bottom-0 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center gap-6 text-lg font-medium text-slate-800 transition-all duration-300 ease-in-out opacity-0 pointer-events-none -translate-y-4"
+  >
+    <button type="button" data-scroll="about-section" class="hover:text-[#FE7930] transition-colors cursor-pointer bg-transparent border-none">
+      Haqqımızda
+    </button>
+    <button type="button" data-scroll="services-section" class="hover:text-[#FE7930] transition-colors cursor-pointer bg-transparent border-none">
+      Xidmətlər
+    </button>
+    <button type="button" data-scroll="clients-section" class="hover:text-[#FE7930] transition-colors cursor-pointer bg-transparent border-none">
+      Müştərilər
+    </button>
+    <button type="button" data-scroll="products-section" class="hover:text-[#FE7930] transition-colors cursor-pointer bg-transparent border-none">
+      Məhsullar
+    </button>
+    <button type="button" data-scroll="contact-section" class="hover:text-[#FE7930] transition-colors cursor-pointer bg-transparent border-none">
+      Əlaqə
+    </button>
+    <button type="button" data-scroll="contact-section" class="rounded-full bg-[#FE7930] px-6 py-3 text-white font-bold cursor-pointer border-none">
+      Blog
+    </button>
+
+    <div class="flex gap-4 mt-4">
+      <button type="button" class="text-sm font-semibold text-slate-600 hover:text-orange-500 bg-transparent border-none cursor-pointer">AZ</button>
+      <button type="button" class="text-sm font-semibold text-slate-600 hover:text-orange-500 bg-transparent border-none cursor-pointer">RU</button>
+      <button type="button" class="text-sm font-semibold text-slate-600 hover:text-orange-500 bg-transparent border-none cursor-pointer">EN</button>
+    </div>
+  </div>
 </header>
 
+<style>
+  #mobile-menu.open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  #burger-btn.open .burger-line:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  #burger-btn.open .burger-line:nth-child(2) {
+    opacity: 0;
+  }
+  #burger-btn.open .burger-line:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+</style>
+
 <script>
-  // Логика скролла для Astro
   const initScroll = () => {
+    const burgerBtn = document.getElementById('burger-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    const closeMenu = () => {
+      burgerBtn?.classList.remove('open');
+      mobileMenu?.classList.remove('open');
+      burgerBtn?.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    };
+
+    burgerBtn?.addEventListener('click', () => {
+      const isOpen = mobileMenu?.classList.toggle('open');
+      burgerBtn.classList.toggle('open');
+      burgerBtn.setAttribute('aria-expanded', String(!!isOpen));
+      document.body.style.overflow = isOpen ? 'hidden' : '';
+    });
+
     const scrollButtons = document.querySelectorAll('[data-scroll]');
-    
     scrollButtons.forEach((btn) => {
       btn.addEventListener('click', () => {
         const targetId = btn.getAttribute('data-scroll');
         if (!targetId) return;
+
+        closeMenu();
 
         if (window.location.pathname === '/') {
           const element = document.getElementById(targetId);

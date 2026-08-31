@@ -1,0 +1,122 @@
+---
+// ProductsSection.astro
+interface Product {
+  name: string;
+  description: string;
+  buttonText?: string;
+  href?: string;
+  accent?: string; // акцентный цвет мокапа
+}
+
+interface Props {
+  title?: string;
+  description?: string;
+  class?: string;
+}
+
+const {
+  title = "Məhsullarımız",
+  description = "Bizim məhsullarımız hər bir istifadəçinin ehtiyacına uyğun olaraq hazırlanmışdır.",
+  class: className,
+} = Astro.props;
+
+const products: Product[] = [
+  {
+    name: "INFLUENCER.AZ",
+    description:
+      "Azərbaycanın ən böyük və funksional influenser bazası. Kampaniyalarınızı planlaşdırın, uyğun influenserləri tapın və nəticələri real vaxtda izləyin.",
+    buttonText: "PLATFORMAYA KEÇİD",
+    href: "../../../../public/influencerpng.png",
+    accent: "from-rose-100 via-orange-50 to-white",
+  },
+  {
+    name: "UTM.AZ",
+    description:
+      "Kampaniyalarınızın effektivliyini ölçmək üçün mükəmməl analitika aləti. Linklərinizi qısaldın, izləyin və auditoriyanızı daha yaxşı anlayın.",
+    buttonText: "PLATFORMAYA KEÇİD",
+    href: "../../../../public/utm.az.png",
+    accent: "from-emerald-100 via-green-50 to-white",
+  },
+];
+---
+
+<div class:list={[ "w-full max-w-7xl mx-auto", className ]} id="products-section">
+   <div class="mb-10 text-center sm:text-left">
+       <h2 class="text-2xl md:text-5xl text-slate-900 tracking-tight mb-5">
+      Məhsullarımız
+      </h2>
+    </div>
+
+  <div class="flex flex-col gap-20 sm:gap-28">
+    {
+      products.map((product, i) => (
+        <div
+          class:list={[
+            "grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center",
+          ]}
+        >
+          {/* Мокап окна */}
+          <div
+            class:list={[
+              "relative rounded-2xl overflow-hidden border border-slate-200 shadow-xl shadow-slate-200/50 bg-gradient-to-br",
+              product.accent,
+              i % 2 === 1 ? "lg:order-1" : "lg:order-2",
+            ]}
+          >
+            {/* Верхняя панель браузера */}
+            <div class="flex items-center gap-1.5 px-4 py-3 bg-white/70 backdrop-blur-sm border-b border-slate-200">
+              <span class="w-2.5 h-2.5 rounded-full bg-slate-300" />
+              <span class="w-2.5 h-2.5 rounded-full bg-slate-300" />
+              <span class="w-2.5 h-2.5 rounded-full bg-slate-300" />
+            </div>
+
+            {/* Контент мокапа */}
+            <div class="p-4 sm:p-6 min-h-[220px] sm:min-h-[280px]">
+                <img
+                    src={product.href}
+                    alt={product.name}
+                    class="w-full h-full object-cover rounded-lg"
+                />
+            </div>
+          </div>
+
+          {/* Текстовый блок */}
+          <div class:list={[
+            "flex flex-col gap-6",
+            i % 2 === 1 ? "lg:order-2" : "lg:order-1",
+          ]}>
+            <h3 class="text-xl sm:text-4xl tracking-tight leading-snug">
+              {product.name}
+            </h3>
+            <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+              {product.description}
+            </p>
+            {product.buttonText && product.href && (
+             <a
+     href={product.href}
+     class="
+    w-fit
+    items-center
+    gap-2
+    rounded-lg
+    bg-[#FE7930]
+    px-10
+    py-3
+    text-sm
+    font-semibold
+    text-white
+    transition-all
+    hover:scale-105
+  "
+>
+  {product.buttonText}
+
+</a>
+            )}
+          </div>
+
+        </div>
+      ))
+    }
+  </div>
+</div>
