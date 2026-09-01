@@ -8,8 +8,10 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "deploy": "bun run build && wrangler deploy",
-    "deploy:dry": "bun run build && wrangler deploy --dry-run",
+    "deploy": "bun run build && wrangler deploy --env production",
+    "deploy:beta": "bun run build && wrangler deploy --env beta",
+    "deploy:dry": "bun run build && wrangler deploy --env production --dry-run",
+    "deploy:dry:beta": "bun run build && wrangler deploy --env beta --dry-run",
     "preview": "astro preview",
     "astro": "astro"
   },

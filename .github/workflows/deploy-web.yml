@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - underconstruction
     paths:
       - "apps/web/**"
       - "packages/**"
@@ -17,7 +18,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: cloudflare-production
+  group: cloudflare-web-${{ github.ref_name }}
   cancel-in-progress: false
 
 jobs:
@@ -39,11 +40,22 @@ jobs:
       - name: Build
         run: bun run build 2>&1 | tail -n 50
 
-      - name: Deploy
+      - name: Deploy beta site
+        if: github.ref_name == 'main'
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/web
-          command: deploy --message "git-action by theoksigen"
+          command: deploy --env beta --message "git-action by theoksigen"
+          wranglerVersion: "4.127.0"
+
+      - name: Deploy under-construction site
+        if: github.ref_name == 'underconstruction'
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: apps/web
+          command: deploy --env production --message "git-action by theoksigen"
           wranglerVersion: "4.127.0"
