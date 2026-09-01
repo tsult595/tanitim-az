@@ -1,11 +1,195 @@
 ---
-
-import Hero from '../components/user/mainPage/Hero.astro';
 import UserLayout from '../layouts/UserLayout.astro';
+
+const messages = [
+  'Bəzi görüşlərə hazırlaşmaq vaxt aparır. Biz də sizinlə görüşə hazırlaşırıq. ❤️',
+  'Sizi gözlətmək istəməzdik... Amma saytımızın öz planları var. 🛠️',
+  'Sevgi səbir tələb edir. Yaxşı sayt da. ❤️🛠️',
+  'Getməyin... Sadəcə saytımızın saçını düzəldirik. 😭',
+  'Gecikdik, üzr istəyirik. Amma gözəl şeylər bir az gec gəlir. 😉',
+  '🚧 Burada sayt olmalı idi.\nAmma sayt hazırda təmirdədir.\nUstalar deyir ki, “sabah hazır olacaq”.\nHansı sabah olduğu hələ məlum deyil. 😄',
+];
 ---
 
-<UserLayout title="Tanitim.az — Главная">
-  <main class="w-full">
-    <Hero class="bg-orange-100 my-custom-class" />
+<UserLayout title="Tanidim.az — Tezliklə">
+  <main class="maintenance-page" data-messages={JSON.stringify(messages)}>
+    <div class="maintenance-content">
+      <div class="maintenance-illustration" aria-hidden="true">
+        <svg viewBox="0 0 360 210" role="presentation">
+          <path class="accent-line" d="M180 171 89 83c-42-42 20-103 62-60l29 29 29-29c42-43 104 18 62 60Z" />
+          <path class="tool-line" d="m45 174 68-68 17 17-68 68H45Z" />
+          <path class="tool-line" d="M102 117l16-16 17 17-16 16" />
+          <path class="tool-line" d="M251 104c12 3 25-1 34-10 8-9 12-21 8-33l-21 22-17-4-5-17 21-22c-12-3-24 1-33 10-13 14-15 34-6 49l-54 55 18 18 54-55c15 8 35 5 48-8 9-9 12-21 9-33l-21 22-17-4-5-17 21-22" />
+          <path class="ground-line" d="M28 192h304" />
+          <path class="spark-line" d="M180 5v17M119 23l9 14M241 23l-9 14M70 74H53M307 74h-17" />
+        </svg>
+      </div>
+
+      <p class="maintenance-message visible" aria-live="polite">{messages[0]}</p>
+
+      <div class="message-progress" aria-hidden="true">
+        {messages.map((_, index) => (
+          <span class:list={["progress-dot", { active: index === 0 }]}></span>
+        ))}
+      </div>
+    </div>
   </main>
+
+  <script>
+    const page = document.querySelector<HTMLElement>('.maintenance-page');
+    const message = document.querySelector<HTMLElement>('.maintenance-message');
+    const dots = Array.from(document.querySelectorAll<HTMLElement>('.progress-dot'));
+
+    if (page && message) {
+      const messages = JSON.parse(page.dataset.messages ?? '[]') as string[];
+      let currentIndex = Math.floor(Math.random() * messages.length);
+
+      const showMessage = (index: number) => {
+        message.classList.remove('visible');
+
+        window.setTimeout(() => {
+          message.textContent = messages[index];
+          dots.forEach((dot, dotIndex) => dot.classList.toggle('active', dotIndex === index));
+          message.classList.add('visible');
+        }, 180);
+      };
+
+      showMessage(currentIndex);
+
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        window.setInterval(() => {
+          currentIndex = (currentIndex + 1) % messages.length;
+          showMessage(currentIndex);
+        }, 5200);
+      }
+    }
+  </script>
 </UserLayout>
+
+<style>
+  :global(html) {
+    background: #fbfaf7;
+  }
+
+  :global(body) {
+    margin: 0;
+  }
+
+  .maintenance-page {
+    display: grid;
+    min-height: 100svh;
+    place-items: center;
+    overflow: hidden;
+    padding: clamp(2rem, 6vw, 5rem) 1.5rem;
+    background: #fbfaf7;
+    color: #232323;
+  }
+
+  .maintenance-content {
+    width: min(100%, 62rem);
+    text-align: center;
+  }
+
+  .maintenance-illustration {
+    width: min(70vw, 22.5rem);
+    margin: 0 auto clamp(1.75rem, 5vh, 3.5rem);
+  }
+
+  .maintenance-illustration svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+
+  .accent-line,
+  .tool-line,
+  .ground-line,
+  .spark-line {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .accent-line {
+    stroke: #f06451;
+    stroke-width: 4;
+  }
+
+  .tool-line,
+  .ground-line,
+  .spark-line {
+    stroke: #b9afa3;
+    stroke-width: 3;
+  }
+
+  .maintenance-message {
+    display: grid;
+    min-height: 3.6em;
+    margin: 0;
+    place-items: center;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(2rem, 4.25vw, 4.5rem);
+    font-weight: 400;
+    line-height: 1.18;
+    letter-spacing: -0.035em;
+    white-space: pre-line;
+    text-wrap: balance;
+    opacity: 0;
+    transform: translateY(0.5rem);
+    transition: opacity 360ms ease, transform 360ms ease;
+  }
+
+  .maintenance-message.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .message-progress {
+    display: flex;
+    justify-content: center;
+    gap: 0.65rem;
+    margin-top: clamp(2rem, 5vh, 3.5rem);
+  }
+
+  .progress-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 999px;
+    background: #c9c0b6;
+    transition: width 280ms ease, background-color 280ms ease;
+  }
+
+  .progress-dot.active {
+    width: 1.8rem;
+    background: #f06451;
+  }
+
+  @media (max-width: 640px) {
+    .maintenance-page {
+      padding-inline: 1.25rem;
+    }
+
+    .maintenance-illustration {
+      width: min(72vw, 17rem);
+      margin-bottom: 2rem;
+    }
+
+    .maintenance-message {
+      min-height: 6em;
+      font-size: clamp(1.8rem, 8.5vw, 2.8rem);
+      letter-spacing: -0.025em;
+    }
+
+    .message-progress {
+      margin-top: 1.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .maintenance-message,
+    .progress-dot {
+      transition: none;
+    }
+  }
+</style>
