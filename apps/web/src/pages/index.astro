@@ -23,42 +23,19 @@ const messages = [
         </nav>
       </header>
 
-      <p class="maintenance-message visible" aria-live="polite">{messages[0]}</p>
-
-      <div class="message-progress" aria-hidden="true">
-        {messages.map((_, index) => (
-          <span class:list={["progress-dot", { active: index === 0 }]}></span>
-        ))}
-      </div>
+      <p class="maintenance-message">{messages[0]}</p>
     </div>
   </main>
 
   <script>
     const page = document.querySelector<HTMLElement>('.maintenance-page');
     const message = document.querySelector<HTMLElement>('.maintenance-message');
-    const dots = Array.from(document.querySelectorAll<HTMLElement>('.progress-dot'));
 
     if (page && message) {
       const messages = JSON.parse(page.dataset.messages ?? '[]') as string[];
-      let currentIndex = Math.floor(Math.random() * messages.length);
 
-      const showMessage = (index: number) => {
-        message.classList.remove('visible');
-
-        window.setTimeout(() => {
-          message.textContent = messages[index];
-          dots.forEach((dot, dotIndex) => dot.classList.toggle('active', dotIndex === index));
-          message.classList.add('visible');
-        }, 180);
-      };
-
-      showMessage(currentIndex);
-
-      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        window.setInterval(() => {
-          currentIndex = (currentIndex + 1) % messages.length;
-          showMessage(currentIndex);
-        }, 5200);
+      if (messages.length > 0) {
+        message.textContent = messages[Math.floor(Math.random() * messages.length)];
       }
     }
   </script>
@@ -140,34 +117,6 @@ const messages = [
     letter-spacing: -0.035em;
     white-space: pre-line;
     text-wrap: balance;
-    opacity: 0;
-    transform: translateY(0.5rem);
-    transition: opacity 360ms ease, transform 360ms ease;
-  }
-
-  .maintenance-message.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .message-progress {
-    display: flex;
-    justify-content: center;
-    gap: 0.65rem;
-    margin-top: clamp(2rem, 5vh, 3.5rem);
-  }
-
-  .progress-dot {
-    width: 0.55rem;
-    height: 0.55rem;
-    border-radius: 999px;
-    background: #c9c0b6;
-    transition: width 280ms ease, background-color 280ms ease;
-  }
-
-  .progress-dot.active {
-    width: 1.8rem;
-    background: #f06451;
   }
 
   @media (max-width: 640px) {
@@ -188,17 +137,6 @@ const messages = [
       min-height: 6em;
       font-size: clamp(1.8rem, 8.5vw, 2.8rem);
       letter-spacing: -0.025em;
-    }
-
-    .message-progress {
-      margin-top: 1.75rem;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .maintenance-message,
-    .progress-dot {
-      transition: none;
     }
   }
 </style>
