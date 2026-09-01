@@ -117,6 +117,19 @@ const messages = [
     letter-spacing: -0.035em;
     white-space: pre-line;
     text-wrap: balance;
+    animation: message-reveal 650ms 100ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes message-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(1rem);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @media (max-width: 640px) {
@@ -137,6 +150,12 @@ const messages = [
       min-height: 6em;
       font-size: clamp(1.8rem, 8.5vw, 2.8rem);
       letter-spacing: -0.025em;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .maintenance-message {
+      animation: none;
     }
   }
 </style>
