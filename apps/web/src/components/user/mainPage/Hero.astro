@@ -3,6 +3,7 @@ import Header from './Header.astro';
 import AboutSection from './AboutSection.astro'; 
 import ServicesSection from './ServicesSection.astro';
 import ProductsSection from './ProductsSection.astro';
+import CounterSection from './CounterSection.astro';
 
 interface Props {
   class?: string;
@@ -20,5 +21,6 @@ const { class: className } = Astro.props;
     <ServicesSection class="mt-20" />
     <ProductsSection class="mt-20" />
   </div>
+  <CounterSection class="mt-20" />
 </main>
 </section>

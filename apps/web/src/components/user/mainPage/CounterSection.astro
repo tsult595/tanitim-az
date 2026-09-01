@@ -1,0 +1,30 @@
+---
+interface Props {
+  class?: string;
+}
+
+
+
+const { class: className } = Astro.props;
+---
+
+<div class:list={['mx-auto', 'sm:px-6', 'lg:px-10', 'xl:px-0', 'py-10', 'sm:py-12', 'md:py-14', 'lg:py-16', 'bg-gradient-to-r', 'from-orange-100', 'via-yellow-50', 'to-white shadow-2xl' , className] }>
+   <div class="max-w-7xl m-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 md:gap-10 bg-white p-6 sm:p-8 md:p-10 rounded-xl border border-white/10 shadow-lg shadow-orange-500/10">    
+       <div class="flex flex-col items-center justify-center">
+         <div class="text-4xl font-bold text-gray-900">0</div>
+         <div class="text-lg font-medium text-gray-600">0</div>
+       </div>
+       <div class="flex flex-col items-center justify-center">
+         <div class="text-4xl font-bold text-gray-900">0</div>
+         <div class="text-lg font-medium text-gray-600">0</div>
+       </div>
+       <div class="flex flex-col items-center justify-center">
+         <div class="text-4xl font-bold text-gray-900">0</div>
+         <div class="text-lg font-medium text-gray-600">0</div>
+       </div>
+       <div class="flex flex-col items-center justify-center">
+         <div class="text-4xl font-bold text-gray-900">0</div>
+         <div class="text-lg font-medium text-gray-600">0</div>
+       </div>
+    </div> 
+</div>
