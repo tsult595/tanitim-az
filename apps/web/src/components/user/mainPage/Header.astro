@@ -9,40 +9,43 @@ const { class: className } = Astro.props;
 <header class:list={["h-16 sm:h-20 px-4 sm:px-6 lg:px-1", className]}>
   <nav class="max-w-7xl mx-auto w-full h-full flex items-center justify-between">
     <!-- Логотип -->
-    <div class="h-8 w-20 sm:h-9 sm:w-25 flex-shrink-0">
+    <a class="h-8 w-20 sm:h-9 sm:w-25 flex-shrink-0" href="/">
       <img
+       
         src="/tanitim_logo.png"
         alt="Logo"
         class="h-full w-full object-contain"
       />
-    </div>
+    </a>
 
-    <!-- Десктоп-меню -->
-    <div class="flex-1 hidden items-center justify-center gap-6 lg:gap-8 md:flex text-sm font-medium">
-      <button type="button" data-scroll="about-section" class="hover:text-[#FE7930] text-sm text-slate-700 transition-colors cursor-pointer bg-transparent border-none p-0">
+   
+   
+
+    <!-- Правый блок: Blog + язык + бургер -->
+    <div class="flex items-center gap-8">
+       <div class="flex-1 hidden items-center justify-center gap-6 lg:gap-9 md:flex text-xs font-semibold">
+      <button type="button" data-scroll="about-section" class="hover:text-[#FE7930] uppercase tracking-wider text-slate-800 transition-colors cursor-pointer bg-transparent border-none p-0">
         Haqqımızda
       </button>
-      <button type="button" data-scroll="services-section" class="hover:text-[#FE7930] text-sm text-slate-700 transition-colors cursor-pointer bg-transparent border-none p-0">
+      <button type="button" data-scroll="services-section" class="hover:text-[#FE7930] uppercase tracking-wider text-slate-800 transition-colors cursor-pointer bg-transparent border-none p-0">
         Xidmətlər
       </button>
-      <button type="button" data-scroll="clients-section" class="hover:text-[#FE7930] text-sm text-slate-700 transition-colors cursor-pointer bg-transparent border-none p-0">
+      <button type="button" data-scroll="clients-section" class="hover:text-[#FE7930] uppercase tracking-wider text-slate-800 transition-colors cursor-pointer bg-transparent border-none p-0">
         Müştərilər
       </button>
-      <button type="button" data-scroll="products-section" class="hover:text-[#FE7930] text-sm text-slate-700 transition-colors cursor-pointer bg-transparent border-none p-0">
+      <button type="button" data-scroll="products-section" class="hover:text-[#FE7930] uppercase tracking-wider text-slate-800 transition-colors cursor-pointer bg-transparent border-none p-0">
         Məhsullar
       </button>
-      <button type="button" data-scroll="contact-section" class="hover:text-[#FE7930] text-sm text-slate-700 transition-colors cursor-pointer bg-transparent border-none p-0">
+      <button type="button" data-scroll="contact-section" class="hover:text-[#FE7930] uppercase tracking-wider text-slate-800 transition-colors cursor-pointer bg-transparent border-none p-0">
         Əlaqə
       </button>
-      <button type="button" data-scroll="contact-section" class="rounded-full bg-[#FE7930] px-5 py-2.5 text-sm font-bold text-white transition-transform hover:scale-105 active:scale-95 select-none cursor-pointer border-none">
-        Blog
-      </button>
     </div>
+      <a href="/user/blogs" rel="noopener noreferrer" class="hidden md:inline-flex bg-[#FE7930] rounded-full px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-transform hover:scale-105 active:scale-95 select-none cursor-pointer border-none">
+        Blog
+      </a>
 
-    <!-- Правый блок: язык + бургер -->
-    <div class="flex items-center gap-3">
       <div class="relative group py-2 hidden sm:block">
-        <button type="button" class="flex items-center gap-1 text-sm font-semibold text-slate-800 hover:text-orange-500 transition-colors cursor-pointer bg-transparent border-none p-0">
+        <button type="button" class="flex items-center gap-1 text-xs font-semibold uppercase text-slate-800 hover:text-orange-500 transition-colors cursor-pointer bg-transparent border-none p-0">
           <span>AZ</span>
           <svg class="w-3.5 h-3.5 text-orange-700 group-hover:text-slate-900 transition-transform group-hover:rotate-180 duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -79,24 +82,28 @@ const { class: className } = Astro.props;
     id="mobile-menu"
     class="md:hidden fixed inset-x-0 top-16 sm:top-20 bottom-0 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center gap-6 text-lg font-medium text-slate-800 transition-all duration-300 ease-in-out opacity-0 pointer-events-none -translate-y-4"
   >
-    <button type="button" data-scroll="about-section" class="hover:text-[#FE7930] transition-colors cursor-pointer bg-transparent border-none">
+    <button type="button" data-scroll="about-section" class="hover:text-[#FE7930] uppercase tracking-wider transition-colors cursor-pointer bg-transparent border-none">
       Haqqımızda
     </button>
-    <button type="button" data-scroll="services-section" class="hover:text-[#FE7930] transition-colors cursor-pointer bg-transparent border-none">
+    <button type="button" data-scroll="services-section" class="hover:text-[#FE7930] uppercase tracking-wider transition-colors cursor-pointer bg-transparent border-none">
       Xidmətlər
     </button>
-    <button type="button" data-scroll="clients-section" class="hover:text-[#FE7930] transition-colors cursor-pointer bg-transparent border-none">
+    <button type="button" data-scroll="clients-section" class="hover:text-[#FE7930] uppercase tracking-wider transition-colors cursor-pointer bg-transparent border-none">
       Müştərilər
     </button>
-    <button type="button" data-scroll="products-section" class="hover:text-[#FE7930] transition-colors cursor-pointer bg-transparent border-none">
+    <button type="button" data-scroll="products-section" class="hover:text-[#FE7930] uppercase tracking-wider transition-colors cursor-pointer bg-transparent border-none">
       Məhsullar
     </button>
-    <button type="button" data-scroll="contact-section" class="hover:text-[#FE7930] transition-colors cursor-pointer bg-transparent border-none">
+    <button type="button" data-scroll="contact-section" class="hover:text-[#FE7930] uppercase tracking-wider transition-colors cursor-pointer bg-transparent border-none">
       Əlaqə
     </button>
-    <button type="button" data-scroll="contact-section" class="rounded-full bg-[#FE7930] px-6 py-3 text-white font-bold cursor-pointer border-none">
-      Blog
-    </button>
+    <a
+    href="/user/blogs"
+    rel="noopener noreferrer"
+    class="inline-flex items-center justify-center bg-[#FE7930] rounded-full px-8 py-3 text-white font-bold uppercase tracking-wider transition-transform hover:scale-105"
+    >
+   Blog
+  </a>
 
     <div class="flex gap-4 mt-4">
       <button type="button" class="text-sm font-semibold text-slate-600 hover:text-orange-500 bg-transparent border-none cursor-pointer">AZ</button>

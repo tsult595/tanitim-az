@@ -1,0 +1,76 @@
+---
+interface Props {
+  image?: string;
+  category?: string;
+  date?: string;
+  title?: string;
+  description?: string;
+ 
+}
+
+const {
+  image = "/img.jpeg",
+  category = "DESIGN",
+  date = "5 Dəqİqə",
+  title = "Без названия",
+  description = "Описание отсутствует",
+
+} = Astro.props;
+
+---
+
+<article
+  class="group flex flex-col h-full w-full overflow-hidden border border-gray-200 rounded-2xl bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+>
+  <!-- Image (aspect-video делает картинку чуть выше и пропорциональнее) -->
+  <div class="relative aspect-[16/10] w-full overflow-hidden bg-gray-100 shrink-0">
+    <img
+      src={image}
+      alt={title}
+      class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+    />
+  </div>
+
+  <!-- Content (flex-1 и flex-col растягивают блок контента на всю оставшуюся высоту) -->
+  <div class="flex flex-1 flex-col justify-between p-6 sm:p-7">
+    <div>
+      <!-- Top info -->
+      <div class="mb-4 flex items-center justify-between">
+        <span
+          class="rounded-full border border-gray-300 px-3 py-1 text-xs font-semibold tracking-wider text-gray-600"
+        >
+          {category}
+        </span>
+
+        <span class="text-xs font-medium text-gray-400">
+          ⏱ {date}
+        </span>
+      </div>
+
+      <!-- Title (увеличен размер шрифта и межстрочный интервал) -->
+      <h3
+        class="mb-3 text-xl sm:text-2xl font-bold leading-snug text-[#363b3f] group-hover:text-[#FE7930] transition-colors"
+      >
+        {title}
+      </h3>
+
+      <!-- Description (увеличен шрифт и разрешено 3 строки текста вместо 2) -->
+      <p
+        class="mb-6 line-clamp-3 text-sm leading-relaxed text-gray-500"
+      >
+        {description}
+      </p>
+    </div>
+
+    <!-- Link (прижат к самому низу за счет flex-col) -->
+    <div class="pt-2">
+      <a
+        href='/user/blogsDetails'
+        class="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-[#FE7930] transition-all hover:gap-3"
+      >
+        MƏQALƏNİ OXU
+        <span class="text-base">→</span>
+      </a>
+    </div>
+  </div>
+</article>

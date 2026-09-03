@@ -1,0 +1,168 @@
+<!-- ---
+// ProductsSection.astro
+interface Product {
+  name: string;
+  description: string;
+  buttonText?: string;
+  href?: string;
+  accent?: string;
+  imgSrc: string;
+}
+
+interface Props {
+  title?: string;
+  description?: string;
+  class?: string;
+}
+
+const {
+  title = "Məhsullarımız",
+  description = "Bizim məhsullarımız hər bir istifadəçinin ehtiyacına uyğun olaraq hazırlanmışdır.",
+  class: className,
+} = Astro.props;
+
+const products: Product[] = [
+  {
+    name: "INFLUENCER.AZ",
+    description:
+      "Azərbaycanın ən böyük və funksional influenser bazası. Kampaniyalarınızı planlaşdırın, uyğun influenserləri tapın və nəticələri real vaxtda izləyin.",
+    buttonText: "ƏTRAFLI BAX",
+    href: "https://influencer.az",
+    accent: "from-rose-100 via-orange-50 to-white",
+    imgSrc: "../../../../public/influencerpng.png",
+  },
+  {
+    name: "UTM.AZ",
+    description:
+      "Kampaniyalarınızın effektivliyini ölçmək üçün mükəmməl analitika aləti. Linklərinizi qısaldın, izləyin və auditoriyanızı daha yaxşı anlayın.",
+    buttonText: "PLATFORMAYA KEÇİD",
+    href: "https://utm.az",
+    accent: "from-emerald-100 via-green-50 to-white",
+    imgSrc: "../../../../public/utm.az.png",
+  },
+];
+---
+
+<div class:list={["w-full max-w-7xl mx-auto", className]} id="products-section">
+  <div class="mb-10 text-center sm:text-left">
+    <h2 class="text-2xl md:text-3xl text-slate-900 tracking-tight mb-5">
+      Lahiyələr
+    </h2>
+  </div>
+
+  {/* белая карточка с каруселью */}
+  <div class="bg-white rounded-2xl p-0 sm:p-6 md:p-8 lg:p-10 overflow-hidden">
+    <div class="carousel-viewport overflow-hidden">
+      <div
+        class="carousel-track flex transition-transform duration-500 ease-in-out"
+        id="carousel-track"
+      >
+        {
+          products.map((product) => (
+            <div class="carousel-slide w-full flex-shrink-0 grid grid-cols-1 lg:grid-cols-2 gap-5 lg:gap-2 items-center px-1">
+              {/* Мокап окна */}
+              <div
+                class:list={[
+                  "relative rounded-2xl overflow-hidden border border-slate-200 shadow-xl shadow-slate-200/50 bg-gradient-to-br lg:order-2",
+                  product.accent,
+                ]}
+              >
+                <div class="flex items-center gap-1.5 px-4 py-3 bg-black backdrop-blur-sm">
+                  <span class="w-2.5 h-2.5 rounded-full bg-red-500" />
+                  <span class="w-2.5 h-2.5 rounded-full bg-yellow-500" />
+                  <span class="w-2.5 h-2.5 rounded-full bg-green-500" />
+                </div>
+
+                <div class="relative p-4 sm:p-6 min-h-[220px] sm:min-h-[320px] border-5 border-black rounded-b-2xl overflow-hidden">
+                  <img
+                    src={product.imgSrc}
+                    alt={product.name}
+                    class="w-full h-full object-cover rounded-lg absolute top-0 left-0"
+                  />
+                </div>
+              </div>
+
+              {/* Текстовый блок */}
+              <div class="flex flex-col gap-6 lg:order-1">
+                <h3 class="text-xl sm:text-4xl tracking-tight leading-snug">
+                  {product.name}
+                </h3>
+                <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+                  {product.description}
+                </p>
+                {product.buttonText && product.href && (
+                  <a
+                    href={product.href}
+                    class="w-fit items-center gap-3 rounded-lg bg-gray-300 px-10 py-2 text-sm font-md text-black transition-all hover:scale-105 flex"
+                  >
+                    {product.buttonText}
+                  </a>
+                )}
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  {/* индикаторы — вне bg-white блока */}
+  <div
+    class="flex gap-3 mt-6 sm:mt-8 m-auto w-fit"
+    id="carousel-dots"
+  >
+    {
+      products.map((_, i) => (
+        <button
+          type="button"
+          class="carousel-dot h-1 rounded-full transition-all duration-300 bg-slate-300 w-12"
+          data-index={i}
+          aria-label={`Go to slide ${i + 1}`}
+        />
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  function initCarousel() {
+    const track = document.getElementById("carousel-track");
+    const dotsWrap = document.getElementById("carousel-dots");
+    if (!track || !dotsWrap) return;
+
+    const slides = track.querySelectorAll(".carousel-slide");
+    const dots = dotsWrap.querySelectorAll(".carousel-dot");
+    let current = 0;
+
+    function goTo(index: number) {
+      current = (index + slides.length) % slides.length;
+      track.style.transform = `translateX(-${current * 100}%)`;
+
+      dots.forEach((dot, i) => {
+        if (i === current) {
+          dot.classList.add("bg-black", "w-16");
+          dot.classList.remove("bg-slate-300", "w-12");
+        } else {
+          dot.classList.add("bg-slate-300", "w-12");
+          dot.classList.remove("bg-black", "w-16");
+        }
+      });
+    }
+
+    dots.forEach((dot, i) => {
+      dot.addEventListener("click", () => goTo(i));
+    });
+
+    // автопрокрутка (по желанию — можно убрать)
+    let auto = setInterval(() => goTo(current + 1), 6000);
+    track.parentElement?.addEventListener("mouseenter", () => clearInterval(auto));
+    track.parentElement?.addEventListener("mouseleave", () => {
+      auto = setInterval(() => goTo(current + 1), 6000);
+    });
+
+    goTo(0);
+  }
+
+  document.addEventListener("astro:page-load", initCarousel);
+  initCarousel();
+</script> -->
