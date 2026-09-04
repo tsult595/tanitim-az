@@ -1,15 +1,17 @@
 ---
+interface Props {
+  clients?: Client[];
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
 interface Client {
   name: string;
   logo: string;
 }
 
-interface Props {
-  clients?: Client[];
-}
 
-// Укажите расширение ваших файлов (например, .png или .svg)
-// Если картинки лежат в подпапке, замените "/" на "/clients/"
 const defaultClients: Client[] = [
   { name: "Starex", logo: "/starex.png" },
   { name: "Solong", logo: "/solong.png" },
@@ -42,21 +44,15 @@ const defaultClients: Client[] = [
 const { clients = defaultClients } = Astro.props;
 ---
 
-<section id="clients-section" class="w-full py-12 md:py-16 lg:py-20">
+<section id="clients-section" class:list={["w-full py-12 md:py-16 lg:py-20" , className]}>
   <div class="mx-auto mb-10 max-w-7xl md:mb-14">
     <h2 class="text-left text-2xl tracking-tight text-slate-900 md:text-3xl">
       Müştərilərimiz
     </h2>
   </div>
 
-  <div class="relative w-full max-w-7xl mx-auto overflow-hidden rounded-2xl bg-[#F7F5F2] border border-slate-200/80 p-6 md:p-10">
+  <div class="relative w-full max-w-7xl mx-auto overflow-hidden rounded-2xl bg-white  p-6 md:p-10">
     
-    <!-- BACKGROUND EFFECTS -->
-    <!-- <div class="pointer-events-none absolute inset-0">
-      <div class="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-[#F0692A]/25 blur-[90px]"></div>
-      <div class="absolute -top-10 right-0 w-[380px] h-[380px] rounded-full bg-[#F5AD82]/35 blur-[90px]"></div>
-      <div class="absolute bottom-0 left-10 w-[360px] h-[360px] rounded-full bg-[#E2ECE9] blur-[80px]"></div>
-    </div> -->
 
     <div class="relative z-10 w-full">
       <div class="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6">
@@ -73,20 +69,7 @@ const { clients = defaultClients } = Astro.props;
               />
             </div>
 
-            <!-- MOBILE LINE -->
-            {index % 2 === 0 && (
-              <span class="absolute right-0 top-1/2 h-16 w-px -translate-y-1/2 bg-slate-200/70 sm:hidden" />
-            )}
-
-            <!-- TABLET LINE -->
-            {index % 3 !== 2 && (
-              <span class="absolute right-0 top-1/2 hidden h-16 w-px -translate-y-1/2 bg-slate-200/70 sm:block md:hidden" />
-            )}
-
-            <!-- DESKTOP LINE -->
-            {index % 6 !== 5 && (
-              <span class="absolute right-0 top-1/2 hidden h-16 w-px -translate-y-1/2 bg-slate-200/70 md:block" />
-            )}
+            
           </div>
         ))}
       </div>

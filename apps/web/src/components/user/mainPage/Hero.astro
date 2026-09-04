@@ -5,6 +5,7 @@ import ServicesSection from './ServicesSection.astro';
 import ProductsSection from './ProductsSection.astro';
 import CounterSection from './CounterSection.astro';
 import ClientsSection from './ClientsSection.astro';
+import ContactUs from './ContactUs.astro';
 
 interface Props {
   class?: string;
@@ -21,7 +22,8 @@ const { class: className } = Astro.props;
     <ServicesSection class="mt-20" />
     <ProductsSection class="mt-20" />
     <ClientsSection class="mt-20" />
+    <ContactUs class="mt-20" />
+    <CounterSection class="mt-20" />
   </div>
-  <CounterSection class="mt-20" />
 </main>
 </section>
