@@ -48,37 +48,37 @@ const relatedArticles = [
           <p class="text-xs text-gray-400 mt-0.5">Explore insights</p>
         </div>
 
-        <nav class="space-y-1">
-          {topics.map((item) => (
-            <a
-              href="#"
-              class:list={[
-                "flex items-center gap-3  py-2.5 rounded-xl text-sm font-medium transition-all duration-200",
-                item.active 
-                  ? "text-[#D96B27] bg-orange-50/50 font-semibold" 
-                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-100/60"
-              ]}
-            >
-              <!-- Простые SVG иконки -->
-              {item.icon === "layout-grid" && (
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-              )}
-              {item.icon === "pen-tool" && (
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-              )}
-              {item.icon === "lightbulb" && (
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-              )}
-              {item.icon === "file-text" && (
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-              )}
-              {item.icon === "users" && (
-                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-              )}
-              <span>{item.label}</span>
-            </a>
-          ))}
-        </nav>
+      <nav class="grid grid-cols-2 gap-x-4 gap-y-1 sm:grid-cols-1">
+  {topics.map((item) => (
+    <a
+      href="#"
+      class:list={[
+        "flex min-w-0 items-center gap-3 rounded-xl px-2 py-2.5 text-sm font-medium transition-all duration-200",
+        item.active
+          ? "bg-orange-50/50 font-semibold text-[#D96B27]"
+          : "text-gray-600 hover:bg-gray-100/60 hover:text-gray-900",
+      ]}
+    >
+      {item.icon === "layout-grid" && (
+        <svg
+          class="h-4 w-4 shrink-0"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
+          />
+        </svg>
+      )}
+
+      <span class="truncate">{item.label}</span>
+    </a>
+  ))}
+</nav>
       </aside>
 
       <!-- 2. Центральная Белая Карточка статьи -->
