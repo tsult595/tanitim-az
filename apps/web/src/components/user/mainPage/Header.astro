@@ -6,8 +6,8 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<header class:list={["h-16 sm:h-20 px-4 sm:px-6 lg:px-1 bg-white", className]}>
-  <nav class="max-w-7xl mx-auto w-full h-full flex items-center justify-between  md:px-12">
+<header class:list={["h-16 sm:h-20 px-4 sm:px-6 lg:px-10 bg-white", className]}>
+  <nav class="max-w-7xl mx-auto w-full h-full flex items-center justify-between lg:px-12">
     <!-- Логотип -->
     <a class="h-8 w-20 sm:h-9 sm:w-25 flex-shrink-0" href="/">
       <img
@@ -23,7 +23,7 @@ const { class: className } = Astro.props;
 
     <!-- Правый блок: Blog + язык + бургер -->
     <div class="flex items-center gap-8">
-       <div class="flex-1 hidden items-center justify-center gap-6 lg:gap-9 md:flex text-xs font-semibold">
+       <div class="flex-1 hidden items-center justify-center gap-6 lg:gap-9 lg:flex text-xs font-semibold">
       <button type="button" data-scroll="about-section" class="hover:text-[#FE7930] uppercase tracking-wider text-slate-800 transition-colors cursor-pointer bg-transparent border-none p-0">
         Haqqımızda
       </button>
@@ -40,11 +40,14 @@ const { class: className } = Astro.props;
         Əlaqə
       </button>
     </div>
-      <a href="/user/blogs" rel="noopener noreferrer" class="hidden md:inline-flex bg-[#FE7930] rounded-full px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-transform hover:scale-105 active:scale-95 select-none cursor-pointer border-none">
-        Blog
-      </a>
+      <a
+      href="/user/blogs"
+     class="inline-flex bg-[#FE7930] rounded-full px-6 py-2.5 text-xs font-bold uppercase tracking-wider text-white transition-transform hover:scale-105 active:scale-95"
+    >
+    Blog
+   </a>
 
-      <div class="relative group py-2 hidden sm:block">
+      <div class="relative group py-2 hidden lg:block">
         <button type="button" class="flex items-center gap-1 text-xs font-semibold uppercase text-slate-800 hover:text-orange-500 transition-colors cursor-pointer bg-transparent border-none p-0">
           <span>AZ</span>
           <svg class="w-3.5 h-3.5 text-orange-700 group-hover:text-slate-900 transition-transform group-hover:rotate-180 duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,7 +71,7 @@ const { class: className } = Astro.props;
         id="burger-btn"
         aria-label="Menu"
         aria-expanded="false"
-        class="md:hidden flex flex-col justify-center items-center w-9 h-9 gap-1.5 bg-transparent border-none cursor-pointer"
+        class="lg:hidden flex flex-col justify-center items-center w-9 h-9 gap-1.5 bg-transparent border-none cursor-pointer"
       >
         <span class="burger-line block w-6 h-0.5 bg-slate-800 transition-transform duration-300"></span>
         <span class="burger-line block w-6 h-0.5 bg-slate-800 transition-opacity duration-300"></span>
@@ -80,7 +83,7 @@ const { class: className } = Astro.props;
   <!-- Мобильное меню (drawer) -->
   <div
     id="mobile-menu"
-    class="md:hidden fixed inset-x-0 top-16 sm:top-20 bottom-0 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center gap-6 text-lg font-medium text-slate-800 transition-all duration-300 ease-in-out opacity-0 pointer-events-none -translate-y-4"
+    class="lg:hidden fixed inset-x-0 top-16 sm:top-20 bottom-0 bg-white/95 backdrop-blur-md flex flex-col items-center justify-center gap-6 text-lg font-medium text-slate-800 transition-all duration-300 ease-in-out opacity-0 pointer-events-none -translate-y-4"
   >
     <button type="button" data-scroll="about-section" class="hover:text-[#FE7930] uppercase tracking-wider transition-colors cursor-pointer bg-transparent border-none">
       Haqqımızda
