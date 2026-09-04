@@ -43,14 +43,15 @@ const products: Product[] = [
 ];
 ---
 
-<div class:list={[ "w-full max-w-7xl mx-auto", className ]} id="products-section">
-   <div class="mb-10 text-center sm:text-left">
-       <h2 class="text-2xl md:text-3xl text-slate-900 tracking-tight mb-5">
-      Lahiyələr
+<section id="products-section" class:list={["w-full py-10 sm:py-12 md:py-16 lg:py-20", className]}>
+  <div class="max-w-7xl mx-auto bg-white px-0 md:py-7">
+    <div class="mb-6 sm:mb-8 md:mb-10 text-left px-0 sm:px-6 md:px-9 lg:px-12">
+      <h2 class="text-2xl md:text-3xl text-slate-900 tracking-tight mb-0">
+        Məhsullarımız
       </h2>
     </div>
 
-  <div class="flex flex-col gap-20 sm:gap-28 bg-white rounded-2xl p-0 sm:p-6 md:p-8 lg:p-10">
+    <div class="flex flex-col gap-20 sm:gap-28 bg-white rounded-2xl p-0 sm:p-6 md:p-9 lg:p-12">
     {
       products.map((product, i) => (
         <div
@@ -123,7 +124,6 @@ const products: Product[] = [
         </div>
       ))
     }
+    </div>
   </div>
-
- 
-</div>
+</section>
