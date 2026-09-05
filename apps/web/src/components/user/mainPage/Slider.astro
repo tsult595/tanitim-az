@@ -166,3 +166,69 @@ const products: Product[] = [
   document.addEventListener("astro:page-load", initCarousel);
   initCarousel();
 </script> -->
+
+
+
+<!-- card -->
+
+
+<!-- <div 
+  class:list={[
+    "relative bg-[#FFECE2] flex flex-col justify-between w-full p-3 sm:p-6 md:p-7 lg:p-8 rounded-2xl sm:rounded-3xl  min-w-[100px] min-h-[100px] sm:min-h-[240px]",
+    ,
+    "transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-orange-500/10",
+    className
+  ]} id="service-card"
+>
+  
+  {badge && (
+    <span class:list={[
+      "absolute top-5 right-5 sm:top-6 sm:right-6 px-2.5 py-1 sm:px-3 sm:py-1 rounded-full text-xs font-semibold border bg-orange-600",
+    
+    ]}>
+      {badge}
+    </span>
+  )}
+
+  
+  <div class="flex justify-between items-center gap-4 sm:gap-5">
+    {icon && (
+      <div class:list={[
+        "flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-orange-500/10 text-orange-600",
+       
+      ]}>
+        <Fragment set:html={icon} />
+      </div>
+    )}
+   
+  </div>
+
+
+  <div class="mt-6 sm:mt-8 flex-1 flex flex-col justify-end ">
+    <h3 class="text-lg sm:text-xl md:text-2xl tracking-tight leading-snug font-semibold">
+      {title}
+    </h3>
+    
+    {description && (
+      <p class:list={[
+        "mt-2 text-sm leading-relaxed",
+        variant === 'orange' ? "text-white/90" : "text-gray-600"
+      ]}>
+        {description}
+      </p>
+    )}
+      <svg
+    class="w-10 h-10 text-white transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 duration-200"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M7 17L17 7M17 7H7M17 7V17"
+    />
+  </svg>
+  </div>
+</div> -->

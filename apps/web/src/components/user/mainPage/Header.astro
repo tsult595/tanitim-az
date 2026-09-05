@@ -6,8 +6,8 @@ interface Props {
 const { class: className } = Astro.props;
 ---
 
-<header class:list={["h-16 sm:h-20 px-4 sm:px-6 lg:px-10 bg-white", className]}>
-  <nav class="max-w-7xl mx-auto w-full h-full flex items-center justify-between lg:px-12">
+<header class:list={["h-16 sm:h-20 px-4 sm:px-6 md:px-10 bg-white", className]}>
+  <nav class="max-w-7xl mx-auto w-full h-full flex items-center justify-between md:px-5 lg:px-12">
     <!-- Логотип -->
     <a class="h-8 w-20 sm:h-9 sm:w-25 flex-shrink-0" href="/">
       <img
@@ -23,7 +23,7 @@ const { class: className } = Astro.props;
 
     <!-- Правый блок: Blog + язык + бургер -->
     <div class="flex items-center gap-8">
-       <div class="flex-1 hidden items-center justify-center gap-6 lg:gap-9 lg:flex text-xs font-semibold">
+       <div class=" hidden items-center justify-center gap-6 lg:gap-9 lg:flex text-xs font-semibold">
       <button type="button" data-scroll="about-section" class="hover:text-[#FE7930] uppercase tracking-wider text-slate-800 transition-colors cursor-pointer bg-transparent border-none p-0">
         Haqqımızda
       </button>
