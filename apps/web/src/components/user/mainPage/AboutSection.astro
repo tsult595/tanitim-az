@@ -5,57 +5,108 @@ interface Props {
   class?: string;
 }
 
-const { 
-
-  class: className 
+const {
+  class: className
 } = Astro.props;
 ---
 
 <div class:list={[className]}>
-  <section id="about-section" class:list={["w-full px-1 md:px-12 ", className]}>
-    <div class="mx-auto flex max-w-7xl flex-col bg-white md:flex-row">
+  <section
+    id="about-section"
+    class:list={["w-full px-1 md:min-h-90 md:px-12", className]}
+  >
+    <div class="mx-auto flex max-w-7xl flex-col items-center bg-white md:flex-row md:items-stretch">
 
-  <!-- Text -->
-  <div class="flex w-full flex-col justify-center gap-8 py-8 md:w-1/2 md:py-0">
-    <h1 class="text-5xl font-bold text-[#FF6D33] md:text-7xl">
-      Biz Kimik?
-    </h1>
+      <!-- Text -->
+      <div class="flex w-full flex-col justify-center gap-8 py-8 md:w-1/2 md:py-0">
+        <h1 class="text-5xl font-bold text-[#FF6D33] md:text-7xl">
+          Biz Kimik?
+        </h1>
 
-    <p>
-      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-      Accusamus, saepe unde laboriosam numquam optio ipsa tempora
-      veniam doloribus officiis. Natus?
-    </p>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          Accusamus, saepe unde laboriosam numquam optio ipsa tempora
+          veniam doloribus officiis. Natus?
+        </p>
 
-    <a
-     href="#services-section"
-     data-scroll="services-section"
-      class="flex w-fit items-center gap-2 rounded-lg text-md font-semibold text-orange-500"
-    >
-      Xidmətlərimiz
+        <div class="w-fit">
+          
+          <a
+            href="#services-section"
+            data-scroll="services-section"
+            class="flex w-fit items-center gap-2 rounded-lg text-md font-semibold text-[#FF6D33]"
+          >
+            Xidmətlərimiz
+            <svg
+              class="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14" />
+              <path d="m13 6 6 6-6 6" />
+            </svg>
+          </a>
 
-      <svg
-        class="h-4 w-4"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-      >
-        <path d="M5 12h14" />
-        <path d="m13 6 6 6-6 6" />
-      </svg>
-    </a>
-  </div>
+          <div class="h-0.5 w-full bg-[#FF6D33]"></div>
+        </div>
+      </div>
 
-  <!-- Image -->
-  <div class="relative w-full shrink-0 md:w-1/2">
-    <img
-      src="/img.jpeg"
-      class="h-full w-full object-cover"
-      alt=""
-    />
-  </div>
+      <!-- Images collage: fixed aspect-ratio container, all positions in % -->
+      <div class="relative w-full max-w-[420px] aspect-[14/14] shrink-0 md:w-1/2 md:max-w-none">
 
-</div>
+        <!-- 1: top-left, meeting table -->
+        <img
+          src="/img.jpeg"
+          alt=""
+          class="absolute left-[13%] top-[5%] z-10 h-[32%] w-[33%] rotate-[-3deg] rounded-[8%] object-cover shadow-md"
+        />
+
+        <!-- 2: top-right, woman with phone -->
+        <img
+          src="/img.jpeg"
+          alt=""
+          class="absolute right-[14%] top-7 z-30 h-[35%] w-[32%] rotate-[3deg] rounded-[8%] object-cover shadow-md"
+        />
+
+        <!-- 3: left, flatlay (phone/earbuds/mug) -->
+        <img
+          src="/img.jpeg"
+          alt=""
+          class="absolute left-0 top-[33%] z-20 h-[31%] w-[30%] rotate-[5deg] rounded-[8%] object-cover shadow-md"
+        />
+
+        <!-- 4: CENTER — wide group meeting -->
+        <img
+          src="/img.jpeg"
+          alt=""
+          class="absolute left-[26%] top-[31%] z-40 h-[31%] w-[50%] rotate-[1deg] rounded-[8%] object-cover shadow-md"
+        />
+
+        <!-- 5: right, woman standing in hallway -->
+        <img
+          src="/img.jpeg"
+          alt=""
+          class="absolute right-0 top-[31%] z-20 h-[30%] w-[30%] rotate-[-3deg] rounded-[8%] object-cover shadow-md"
+        />
+
+        <!-- 6: bottom-left, laptop with charts -->
+        <img
+          src="/img.jpeg"
+          alt=""
+          class="absolute left-[15%] top-[60%] z-41 h-[26%] w-[31%] rotate-[-2deg] rounded-[8%] object-cover shadow-md"
+        />
+
+        <!-- 7: bottom-right, two colleagues at table -->
+        <img
+          src="/img.jpeg"
+          alt=""
+          class="absolute right-[12%] top-[59%] z-41 h-[31%] w-[35%] rotate-[2deg] rounded-[8%] object-cover shadow-md"
+        />
+
+      </div>
+
+    </div>
   </section>
 </div>
