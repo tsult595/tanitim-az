@@ -3,13 +3,26 @@
   "module": "index.ts",
   "type": "module",
   "private": true,
-  "devDependencies": {
-    "@types/bun": "latest"
+  "scripts": {
+    "dev": "wrangler dev src/index.ts",
+    "deploy": "wrangler deploy",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
-    "hono": "^4.13.5"
+    "@hono/zod-validator": "^0.9.1",
+    "drizzle-orm": "^0.45.2",
+    "hono": "4.13.5",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20260915.1",
+    "@types/bun": "latest",
+    "drizzle-kit": "^0.31.10",
+    "wrangler": "^4.131.2"
   }
 }

@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "tanidim-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-08-28",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "tanidim-db",
+      "database_id": "YOUR_D1_DATABASE_ID"
+    }
+  ]
+}
