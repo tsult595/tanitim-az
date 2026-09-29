@@ -1,6 +1,8 @@
 ---
 import UserLayout from '../../layouts/UserLayout.astro';
 import BlogCard from '../../components/user/BlogCard.astro';
+import BlogFooter from '../../components/user/BlogFooter.astro';
+import BlogsFooter from '../../components/BlogsFooter.astro';
 
 interface BlogCardProps {
   image?: string;
@@ -154,6 +156,7 @@ const products: Product[] = [
 </div>
 
     </div>
+    <BlogsFooter/>
   </section>
 </UserLayout>
 

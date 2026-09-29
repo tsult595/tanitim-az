@@ -1,0 +1,32 @@
+---
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<footer class:list={["w-full border-t border-neutral-200 bg-white px-6 py-8 md:px-12 mt-15", className]}>
+  <div class="mx-auto grid max-w-7xl grid-cols-2 gap-x-3 gap-y-3 text-[11px] font-medium uppercase tracking-widest text-neutral-800 md:grid-cols-4 md:p-9 md:items-start">
+
+    <p class="col-span-2 self-end text-neutral-500 md:col-span-1">
+      © 2024 Tanitim Agency. All rights reserved.
+    </p>
+
+    <div class="flex flex-col gap-2">
+      <a href="#" class="transition hover:text-[#FF6D33]">Instagram</a>
+      <a href="#" class="transition hover:text-[#FF6D33]">Behance</a>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <a href="#" class="transition hover:text-[#FF6D33]">Dribbble</a>
+      <a href="#" class="transition hover:text-[#FF6D33]">LinkedIn</a>
+    </div>
+
+    <div class="flex flex-col gap-2">
+      <a href="#" class="transition hover:text-[#FF6D33]">Privacy Policy</a>
+      <a href="#" class="transition hover:text-[#FF6D33]">Terms</a>
+    </div>
+
+  </div>
+</footer>
