@@ -1,0 +1,30 @@
+---
+// src/components/admin/AdminSidebar.astro
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<aside class:list={["w-full sm:w-64 lg:w-72 flex-shrink-0 h-full bg-white border-r border-slate-200", className]}>
+  <div class="p-6">
+    <div class="h-8 w-28 mb-10">
+      <img src="/tanitim_logo.png" alt="Logo" class="h-full w-full object-contain" />
+    </div>
+
+    <nav class="flex flex-col gap-1 text-sm font-medium text-slate-600">
+      <a href="/admin/dashboard" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-[#FE7930] transition-colors aria-[current]:bg-slate-100 aria-[current]:text-[#FE7930]">
+        Dashboard
+      </a>
+      <a href="/admin/blogsAdmin" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-[#FE7930] transition-colors">
+        Bloglar
+      </a>
+      <a href="/admin/servicesAdmin" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-[#FE7930] transition-colors">
+        Services
+      </a>
+      <a href="/admin/translationsAdmin" class="px-3 py-2 rounded-lg hover:bg-slate-100 hover:text-[#FE7930] transition-colors">
+        Translations
+      </a>
+    </nav>
+  </div>
+</aside>

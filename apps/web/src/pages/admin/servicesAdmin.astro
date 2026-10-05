@@ -1,0 +1,315 @@
+---
+// src/pages/admin/servicesAdmin.astro
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+interface Service {
+  id: number;
+  title: string;
+  variant: 'gray' | 'peach' | 'orange';
+  img: string;
+  icon: string;
+}
+
+// Моковые данные — потом заменим на запрос к серверу/БД
+const services: Service[] = [
+  {
+    id: 1,
+    title: "Tədbirlərin təşkili",
+    variant: "gray",
+    img: "/aboutUs/btl.png",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>`,
+  },
+  {
+    id: 2,
+    title: "Rəqəmsal marketinq",
+    variant: "peach",
+    img: "/aboutUs/Content_Creation.png",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>`,
+  },
+  {
+    id: 3,
+    title: "İnfluenser marketinq",
+    variant: "orange",
+    img: "/aboutUs/Digital_Marketing.png",
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>`,
+  },
+];
+
+const variantColors: Record<string, string> = {
+  gray: "bg-slate-100 text-slate-600",
+  peach: "bg-orange-50 text-orange-400",
+  orange: "bg-orange-100 text-[#FE7930]",
+};
+---
+
+<AdminLayout title="Xidmətlər">
+  <div>
+    <!-- Заголовок + кнопка добавить -->
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Xidmətlər</h1>
+        <p class="text-sm text-slate-500 mt-1">Bütün xidmət kartlarını idarə edin</p>
+      </div>
+
+      <button
+        type="button"
+        id="open-add-modal"
+        class="inline-flex items-center gap-2 bg-[#FE7930] hover:bg-orange-600 transition-colors text-white text-sm font-semibold px-5 py-2.5 rounded-lg cursor-pointer border-none"
+      >
+        <span class="text-lg leading-none">+</span>
+        Yeni Xidmət
+      </button>
+    </div>
+
+    <!-- Таблица сервисов -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
+          <tr>
+            <th class="px-6 py-4 font-medium">Şəkil</th>
+            <th class="px-6 py-4 font-medium">Başlıq</th>
+            <th class="px-6 py-4 font-medium">İkon</th>
+            <th class="px-6 py-4 font-medium">Variant</th>
+            <th class="px-6 py-4 font-medium text-right">Əməliyyatlar</th>
+          </tr>
+        </thead>
+        <tbody id="services-table-body" class="divide-y divide-slate-100">
+          {
+            services.map((service) => (
+              <tr
+                data-service-id={service.id}
+                data-icon={service.icon}
+                class="hover:bg-slate-50 transition-colors"
+              >
+                <td class="px-6 py-4">
+                  <img src={service.img} alt={service.title} class="w-14 h-14 rounded-lg object-cover bg-slate-50" />
+                </td>
+                <td class="px-6 py-4">
+                  <p class="font-semibold text-slate-900 service-title">{service.title}</p>
+                </td>
+                <td class="px-6 py-4">
+                  <div
+                    class:list={["w-9 h-9 rounded-lg flex items-center justify-center", variantColors[service.variant]]}
+                    set:html={service.icon}
+                  />
+                </td>
+                <td class="px-6 py-4">
+                  <span
+                    class:list={["inline-block rounded-full text-xs font-bold px-3 py-1 service-variant", variantColors[service.variant]]}
+                    data-value={service.variant}
+                  >
+                    {service.variant}
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center justify-end gap-2">
+                    <button
+                      type="button"
+                      class="edit-btn text-slate-500 hover:text-[#FE7930] hover:bg-orange-50 p-2 rounded-lg transition-colors cursor-pointer border-none bg-transparent"
+                      aria-label="Redaktə et"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      class="delete-btn text-slate-500 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors cursor-pointer border-none bg-transparent"
+                      aria-label="Sil"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+
+      {services.length === 0 && (
+        <div class="text-center py-16 text-slate-400">
+          Hələ heç bir xidmət əlavə edilməyib
+        </div>
+      )}
+    </div>
+  </div>
+
+  <!-- Модалка добавления/редактирования -->
+  <div
+    id="service-modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+  >
+    <div class="bg-white rounded-2xl w-full max-w-lg p-6 sm:p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 id="modal-title" class="text-lg font-bold text-slate-900">Yeni Xidmət</h2>
+        <button
+          type="button"
+          id="close-modal"
+          class="text-slate-400 hover:text-slate-700 cursor-pointer border-none bg-transparent text-xl leading-none"
+          aria-label="Bağla"
+        >
+          ✕
+        </button>
+      </div>
+
+      <form id="service-form" class="flex flex-col gap-4">
+        <input type="hidden" id="service-id" />
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">Başlıq</label>
+          <input
+            type="text"
+            id="service-title"
+            required
+            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FE7930]/40 focus:border-[#FE7930]"
+            placeholder="Xidmətin adı"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">Variant (rəng)</label>
+          <select
+            id="service-variant"
+            required
+            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FE7930]/40 focus:border-[#FE7930] bg-white"
+          >
+            <option value="gray">Gray</option>
+            <option value="peach">Peach</option>
+            <option value="orange">Orange</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">Şəkil (URL)</label>
+          <input
+            type="text"
+            id="service-img"
+            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FE7930]/40 focus:border-[#FE7930]"
+            placeholder="/aboutUs/example.png"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">İkon (SVG kodu)</label>
+          <textarea
+            id="service-icon"
+            rows="3"
+            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-[#FE7930]/40 focus:border-[#FE7930] resize-none"
+            placeholder="<svg>...</svg>"
+          ></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 mt-4">
+          <button
+            type="button"
+            id="cancel-modal"
+            class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer border-none bg-transparent"
+          >
+            Ləğv et
+          </button>
+          <button
+            type="submit"
+            class="px-6 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#FE7930] hover:bg-orange-600 transition-colors cursor-pointer border-none"
+          >
+            Yadda saxla
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  function initServicesAdmin() {
+    const modal = document.getElementById('service-modal');
+    const openBtn = document.getElementById('open-add-modal');
+    const closeBtn = document.getElementById('close-modal');
+    const cancelBtn = document.getElementById('cancel-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const form = document.getElementById('service-form') as HTMLFormElement | null;
+
+    const idInput = document.getElementById('service-id') as HTMLInputElement | null;
+    const titleInput = document.getElementById('service-title') as HTMLInputElement | null;
+    const variantInput = document.getElementById('service-variant') as HTMLSelectElement | null;
+    const imgInput = document.getElementById('service-img') as HTMLInputElement | null;
+    const iconInput = document.getElementById('service-icon') as HTMLTextAreaElement | null;
+
+    const openModal = (mode: 'add' | 'edit', row?: HTMLElement) => {
+      if (!modal || !modalTitle) return;
+
+      if (mode === 'add') {
+        modalTitle.textContent = 'Yeni Xidmət';
+        form?.reset();
+        if (idInput) idInput.value = '';
+      } else if (row) {
+        modalTitle.textContent = 'Xidməti Redaktə Et';
+
+        const title = row.querySelector('.service-title')?.textContent ?? '';
+        const variant = row.querySelector('.service-variant')?.getAttribute('data-value') ?? 'gray';
+        const img = row.querySelector('img')?.getAttribute('src') ?? '';
+        const icon = row.dataset.icon ?? '';
+
+        if (idInput) idInput.value = row.dataset.serviceId ?? '';
+        if (titleInput) titleInput.value = title;
+        if (variantInput) variantInput.value = variant;
+        if (imgInput) imgInput.value = img;
+        if (iconInput) iconInput.value = icon;
+      }
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    };
+
+    const closeModal = () => {
+      modal?.classList.add('hidden');
+      modal?.classList.remove('flex');
+    };
+
+    openBtn?.addEventListener('click', () => openModal('add'));
+    closeBtn?.addEventListener('click', closeModal);
+    cancelBtn?.addEventListener('click', closeModal);
+
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    document.querySelectorAll('.edit-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const row = (btn as HTMLElement).closest('tr');
+        if (row) openModal('edit', row);
+      });
+    });
+
+    document.querySelectorAll('.delete-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const row = (btn as HTMLElement).closest('tr');
+        const title = row?.querySelector('.service-title')?.textContent ?? 'bu xidməti';
+
+        if (confirm(`"${title}" silinsin?`)) {
+          row?.remove(); // пока просто убираем из DOM — без запроса на сервер
+        }
+      });
+    });
+
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const data = {
+        id: idInput?.value || null,
+        title: titleInput?.value,
+        variant: variantInput?.value,
+        img: imgInput?.value,
+        icon: iconInput?.value,
+      };
+
+      console.log('Xidmət saqlanacaq (hələ server yoxdur):', data);
+      closeModal();
+    });
+  }
+
+  initServicesAdmin();
+  document.addEventListener('astro:page-load', initServicesAdmin);
+</script>

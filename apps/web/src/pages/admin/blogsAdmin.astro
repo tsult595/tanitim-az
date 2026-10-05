@@ -1,0 +1,371 @@
+---
+// src/pages/admin/blogsAdmin.astro
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+interface Blog {
+  id: number;
+  image: string;
+  category: string;
+  title: string;
+  description: string;
+  date: string;
+}
+
+// Моковые данные — потом заменим на запрос к серверу/БД
+const blogs: Blog[] = [
+  {
+    id: 1,
+    image: "/img.jpeg",
+    category: "DESIGN",
+    title: "The Rise of Organic UI Elements",
+    description: "Müasir interfeyslərin təbii formalarını necə istifadə etdiyini öyrənin.",
+    date: "2024-01-15",
+  },
+  {
+    id: 2,
+    image: "/img.jpeg",
+    category: "STRATEGY",
+    title: "The Future of Digital Transformation",
+    description: "Rəqəmsal transformasiya və dizayn trendləri barədə fikirlər.",
+    date: "2024-02-03",
+  },
+  {
+    id: 3,
+    image: "/test.png",
+    category: "MARKETING",
+    title: "UTM Kampaniyalarının Effektivliyi",
+    description: "Linklərinizi qısaldın, izləyin və auditoriyanızı daha yaxşı anlayın.",
+    date: "2024-02-20",
+  },
+];
+---
+
+<AdminLayout title="Bloglar">
+  <div>
+    <!-- Заголовок + кнопка добавить -->
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Bloglar</h1>
+        <p class="text-sm text-slate-500 mt-1">Bütün bloq yazılarını idarə edin</p>
+      </div>
+
+      <button
+        type="button"
+        id="open-add-modal"
+        class="inline-flex items-center gap-2 bg-[#FE7930] hover:bg-orange-600 transition-colors text-white text-sm font-semibold px-5 py-2.5 rounded-lg cursor-pointer border-none"
+      >
+        <span class="text-lg leading-none">+</span>
+        Yeni Bloq
+      </button>
+    </div>
+
+    <!-- Таблица блогов -->
+    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+      <table class="w-full text-left text-sm">
+        <thead class="bg-slate-50 text-slate-500 border-b border-slate-200">
+          <tr>
+            <th class="px-6 py-4 font-medium">Şəkil</th>
+            <th class="px-6 py-4 font-medium">Başlıq</th>
+            <th
+              id="byCategory"
+              class="px-6 py-4 font-medium cursor-pointer select-none hover:text-slate-900 transition-colors"
+            >
+              Kateqoriya <span id="sort-arrow-category" class="ml-1"></span>
+            </th>
+            <th
+              id="byDate"
+              class="px-6 py-4 font-medium cursor-pointer select-none hover:text-slate-900 transition-colors"
+            >
+              Tarix <span id="sort-arrow-date" class="ml-1"></span>
+            </th>
+            <th class="px-6 py-4 font-medium text-right">Əməliyyatlar</th>
+          </tr>
+        </thead>
+        <tbody id="blogs-table-body" class="divide-y divide-slate-100">
+          {
+            blogs.map((blog) => (
+              <tr
+                data-blog-id={blog.id}
+                data-date={blog.date}
+                data-category={blog.category}
+                class="hover:bg-slate-50 transition-colors"
+              >
+                <td class="px-6 py-4">
+                  <img src={blog.image} alt={blog.title} class="w-14 h-14 rounded-lg object-cover" />
+                </td>
+                <td class="px-6 py-4 max-w-xs">
+                  <p class="font-semibold text-slate-900 truncate">{blog.title}</p>
+                  <p class="text-slate-500 text-xs truncate mt-0.5">{blog.description}</p>
+                </td>
+                <td class="px-6 py-4">
+                  <span class="inline-block rounded-full bg-orange-50 text-[#FE7930] text-xs font-bold px-3 py-1">
+                    {blog.category}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-slate-500">{blog.date}</td>
+                <td class="px-6 py-4">
+                  <div class="flex items-center justify-end gap-2">
+                    <button
+                      type="button"
+                      data-edit-id={blog.id}
+                      class="edit-btn text-slate-500 hover:text-[#FE7930] hover:bg-orange-50 p-2 rounded-lg transition-colors cursor-pointer border-none bg-transparent"
+                      aria-label="Redaktə et"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </button>
+                    <button
+                      type="button"
+                      data-delete-id={blog.id}
+                      class="delete-btn text-slate-500 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors cursor-pointer border-none bg-transparent"
+                      aria-label="Sil"
+                    >
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+
+      {blogs.length === 0 && (
+        <div class="text-center py-16 text-slate-400">
+          Hələ heç bir bloq əlavə edilməyib
+        </div>
+      )}
+    </div>
+  </div>
+
+  <!-- Модалка добавления/редактирования -->
+  <div
+    id="blog-modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+  >
+    <div class="bg-white rounded-2xl w-full max-w-lg p-6 sm:p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 id="modal-title" class="text-lg font-bold text-slate-900">Yeni Bloq</h2>
+        <button
+          type="button"
+          id="close-modal"
+          class="text-slate-400 hover:text-slate-700 cursor-pointer border-none bg-transparent text-xl leading-none"
+          aria-label="Bağla"
+        >
+          ✕
+        </button>
+      </div>
+
+      <form id="blog-form" class="flex flex-col gap-4">
+        <input type="hidden" id="blog-id" />
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">Başlıq</label>
+          <input
+            type="text"
+            id="blog-title"
+            required
+            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FE7930]/40 focus:border-[#FE7930]"
+            placeholder="Bloqun başlığı"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">Kateqoriya</label>
+          <input
+            type="text"
+            id="blog-category"
+            required
+            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FE7930]/40 focus:border-[#FE7930]"
+            placeholder="Məs: DESIGN, STRATEGY"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">Təsvir</label>
+          <textarea
+            id="blog-description"
+            required
+            rows="3"
+            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FE7930]/40 focus:border-[#FE7930] resize-none"
+            placeholder="Qısa təsvir"
+          ></textarea>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">Şəkil (URL)</label>
+          <input
+            type="text"
+            id="blog-image"
+            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FE7930]/40 focus:border-[#FE7930]"
+            placeholder="/img.jpeg"
+          />
+        </div>
+
+        <div class="flex items-center justify-end gap-3 mt-4">
+          <button
+            type="button"
+            id="cancel-modal"
+            class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer border-none bg-transparent"
+          >
+            Ləğv et
+          </button>
+          <button
+            type="submit"
+            class="px-6 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#FE7930] hover:bg-orange-600 transition-colors cursor-pointer border-none"
+          >
+            Yadda saxla
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  function initBlogsAdmin() {
+    const modal = document.getElementById('blog-modal');
+    const openBtn = document.getElementById('open-add-modal');
+    const closeBtn = document.getElementById('close-modal');
+    const cancelBtn = document.getElementById('cancel-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const form = document.getElementById('blog-form') as HTMLFormElement | null;
+
+    const idInput = document.getElementById('blog-id') as HTMLInputElement | null;
+    const titleInput = document.getElementById('blog-title') as HTMLInputElement | null;
+    const categoryInput = document.getElementById('blog-category') as HTMLInputElement | null;
+    const descriptionInput = document.getElementById('blog-description') as HTMLTextAreaElement | null;
+    const imageInput = document.getElementById('blog-image') as HTMLInputElement | null;
+
+    const byDate = document.getElementById('byDate');
+    const byCategory = document.getElementById('byCategory');
+    const sortArrowDate = document.getElementById('sort-arrow-date');
+    const sortArrowCategory = document.getElementById('sort-arrow-category');
+    const tbody = document.getElementById('blogs-table-body') as HTMLElement | null;
+
+    // Защита от двойной инициализации (astro:page-load + прямой вызов)
+    if (!tbody || tbody.dataset.inited === 'true') return;
+    tbody.dataset.inited = 'true';
+
+    const openModal = (mode: 'add' | 'edit', row?: HTMLElement) => {
+      if (!modal || !modalTitle) return;
+
+      if (mode === 'add') {
+        modalTitle.textContent = 'Yeni Bloq';
+        form?.reset();
+        if (idInput) idInput.value = '';
+      } else if (row) {
+        modalTitle.textContent = 'Bloqu Redaktə Et';
+        const title = row.querySelector('td:nth-child(2) p')?.textContent ?? '';
+        const description = row.querySelector('td:nth-child(2) p:nth-child(2)')?.textContent ?? '';
+        const category = row.querySelector('td:nth-child(3) span')?.textContent?.trim() ?? '';
+        const image = row.querySelector('td:nth-child(1) img')?.getAttribute('src') ?? '';
+
+        if (idInput) idInput.value = row.dataset.blogId ?? '';
+        if (titleInput) titleInput.value = title;
+        if (categoryInput) categoryInput.value = category;
+        if (descriptionInput) descriptionInput.value = description;
+        if (imageInput) imageInput.value = image;
+      }
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    };
+
+    const closeModal = () => {
+      modal?.classList.add('hidden');
+      modal?.classList.remove('flex');
+    };
+
+    openBtn?.addEventListener('click', () => openModal('add'));
+    closeBtn?.addEventListener('click', closeModal);
+    cancelBtn?.addEventListener('click', closeModal);
+
+    // Клик по фону закрывает модалку
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    // Редактирование
+    document.querySelectorAll('.edit-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const row = (btn as HTMLElement).closest('tr');
+        if (row) openModal('edit', row as HTMLElement);
+      });
+    });
+
+    // Удаление
+    document.querySelectorAll('.delete-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const row = (btn as HTMLElement).closest('tr');
+        const title = row?.querySelector('td:nth-child(2) p')?.textContent ?? 'bu bloqu';
+
+        if (confirm(`"${title}" silinsin?`)) {
+          row?.remove(); // пока просто убираем из DOM — без запроса на сервер
+        }
+      });
+    });
+
+    // Сортировка по категории
+    let sortCategoryAsc = true; // первый клик: A → Z
+
+    byCategory?.addEventListener('click', () => {
+      const rows = Array.from(tbody.querySelectorAll<HTMLElement>('tr'));
+
+      rows.sort((a, b) => {
+        const catA = a.dataset.category ?? '';
+        const catB = b.dataset.category ?? '';
+        return sortCategoryAsc ? catA.localeCompare(catB) : catB.localeCompare(catA);
+      });
+
+      rows.forEach((row) => tbody.appendChild(row));
+
+      if (sortArrowCategory) sortArrowCategory.textContent = sortCategoryAsc ? '↑' : '↓';
+      if (sortArrowDate) sortArrowDate.textContent = ''; // сбрасываем стрелку другой колонки
+      sortCategoryAsc = !sortCategoryAsc;
+      sortDateAsc = false; // при возврате к дате снова начнём с «новые сверху»
+    });
+
+    // Сортировка по дате
+    let sortDateAsc = false; // первый клик: сначала новые
+
+    byDate?.addEventListener('click', () => {
+      const rows = Array.from(tbody.querySelectorAll<HTMLElement>('tr'));
+
+      rows.sort((a, b) => {
+        const dateA = new Date(a.dataset.date ?? '').getTime();
+        const dateB = new Date(b.dataset.date ?? '').getTime();
+        return sortDateAsc ? dateA - dateB : dateB - dateA;
+      });
+
+      rows.forEach((row) => tbody.appendChild(row));
+
+      if (sortArrowDate) sortArrowDate.textContent = sortDateAsc ? '↑' : '↓';
+      if (sortArrowCategory) sortArrowCategory.textContent = ''; // сбрасываем стрелку другой колонки
+      sortDateAsc = !sortDateAsc;
+      sortCategoryAsc = true; // при возврате к категории снова начнём с A → Z
+    });
+
+    // Сабмит формы — пока просто логируем, сервер подключим позже
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const data = {
+        id: idInput?.value || null,
+        title: titleInput?.value,
+        category: categoryInput?.value,
+        description: descriptionInput?.value,
+        image: imageInput?.value,
+      };
+
+      console.log('Blog saqlanacaq (hələ server yoxdur):', data);
+      closeModal();
+    });
+  }
+
+  initBlogsAdmin();
+  document.addEventListener('astro:page-load', initBlogsAdmin);
+</script>
