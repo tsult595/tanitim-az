@@ -1,0 +1,332 @@
+---
+// src/pages/admin/logosAdmin.astro
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+interface Logo {
+  id: number;
+  name: string;
+  image: string;
+}
+
+// Моковые данные — потом заменим на запрос к серверу/БД
+const logos: Logo[] = [
+  { id: 1, name: "Coca-Cola", image: "/logos/cocacola.png" },
+  { id: 2, name: "Nike", image: "/logos/nike.png" },
+  { id: 3, name: "Samsung", image: "/logos/samsung.png" },
+  { id: 4, name: "Azercell", image: "/logos/azercell.png" },
+];
+---
+
+<AdminLayout title="Loqolar">
+  <div>
+    <!-- Заголовок + кнопка добавить -->
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">Loqolar</h1>
+        <p class="text-sm text-slate-500 mt-1">Saytda göstərilən müştəri loqolarını idarə edin</p>
+      </div>
+
+      <button
+        type="button"
+        id="open-add-modal"
+        class="inline-flex items-center gap-2 bg-[#FE7930] hover:bg-orange-600 transition-colors text-white text-sm font-semibold px-5 py-2.5 rounded-lg cursor-pointer border-none"
+      >
+        <span class="text-lg leading-none">+</span>
+        Yeni Loqo
+      </button>
+    </div>
+
+    <!-- Сетка логотипов -->
+    <div
+      id="logos-grid"
+      class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5"
+    >
+      {
+        logos.map((logo, index) => (
+          <div
+            data-logo-id={logo.id}
+            data-logo-name={logo.name}
+            data-logo-image={logo.image}
+            class="group relative bg-white rounded-2xl border border-slate-200 p-6 flex flex-col items-center gap-4 hover:border-slate-300 transition-colors"
+          >
+            {/* Удалить — показывается при наведении */}
+            <button
+              type="button"
+              class="delete-btn absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+              aria-label="Sil"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            <div class="h-16 flex items-center justify-center w-full">
+              <img
+                src={logo.image}
+                alt={logo.name}
+                class="max-h-16 max-w-full object-contain grayscale group-hover:grayscale-0 transition-all"
+              />
+            </div>
+
+            <p class="text-xs font-medium text-slate-500 truncate w-full text-center">
+              {logo.name}
+            </p>
+
+            {/* Кнопки порядка */}
+            <div class="flex items-center gap-1 mt-1">
+              <button
+                type="button"
+                class="move-left-btn w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-[#FE7930] hover:bg-orange-50 transition-colors cursor-pointer border-none bg-transparent disabled:opacity-20 disabled:cursor-not-allowed"
+                aria-label="Sola köçür"
+                disabled={index === 0}
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <span class="text-[10px] text-slate-300 px-1 order-index">{index + 1}</span>
+              <button
+                type="button"
+                class="move-right-btn w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-[#FE7930] hover:bg-orange-50 transition-colors cursor-pointer border-none bg-transparent disabled:opacity-20 disabled:cursor-not-allowed"
+                aria-label="Sağa köçür"
+                disabled={index === logos.length - 1}
+              >
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+
+    {logos.length === 0 && (
+      <div class="text-center py-20 text-slate-400 border border-dashed border-slate-200 rounded-2xl">
+        Hələ heç bir loqo əlavə edilməyib
+      </div>
+    )}
+  </div>
+
+  <!-- Модалка добавления -->
+  <div
+    id="logo-modal"
+    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+  >
+    <div class="bg-white rounded-2xl w-full max-w-md p-6 sm:p-8">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-lg font-bold text-slate-900">Yeni Loqo</h2>
+        <button
+          type="button"
+          id="close-modal"
+          class="text-slate-400 hover:text-slate-700 cursor-pointer border-none bg-transparent text-xl leading-none"
+          aria-label="Bağla"
+        >
+          ✕
+        </button>
+      </div>
+
+      <form id="logo-form" class="flex flex-col gap-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">Şirkət adı</label>
+          <input
+            type="text"
+            id="logo-name"
+            required
+            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FE7930]/40 focus:border-[#FE7930]"
+            placeholder="Məs: Nike"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-1.5">Loqo (URL)</label>
+          <input
+            type="text"
+            id="logo-image"
+            required
+            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FE7930]/40 focus:border-[#FE7930]"
+            placeholder="/logos/example.png"
+          />
+        </div>
+
+        <!-- Превью -->
+        <div
+          id="logo-preview-wrap"
+          class="hidden h-20 rounded-lg border border-dashed border-slate-200 items-center justify-center p-3"
+        >
+          <img id="logo-preview" src="" alt="" class="max-h-full max-w-full object-contain" />
+        </div>
+
+        <div class="flex items-center justify-end gap-3 mt-2">
+          <button
+            type="button"
+            id="cancel-modal"
+            class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer border-none bg-transparent"
+          >
+            Ləğv et
+          </button>
+          <button
+            type="submit"
+            class="px-6 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#FE7930] hover:bg-orange-600 transition-colors cursor-pointer border-none"
+          >
+            Əlavə et
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  function initLogosAdmin() {
+    const grid = document.getElementById('logos-grid') as HTMLElement | null;
+    if (!grid || grid.dataset.inited === 'true') return;
+    grid.dataset.inited = 'true';
+
+    const modal = document.getElementById('logo-modal');
+    const openBtn = document.getElementById('open-add-modal');
+    const closeBtn = document.getElementById('close-modal');
+    const cancelBtn = document.getElementById('cancel-modal');
+    const form = document.getElementById('logo-form') as HTMLFormElement | null;
+
+    const nameInput = document.getElementById('logo-name') as HTMLInputElement | null;
+    const imageInput = document.getElementById('logo-image') as HTMLInputElement | null;
+    const previewWrap = document.getElementById('logo-preview-wrap');
+    const previewImg = document.getElementById('logo-preview') as HTMLImageElement | null;
+
+    const openModal = () => {
+      form?.reset();
+      previewWrap?.classList.add('hidden');
+      modal?.classList.remove('hidden');
+      modal?.classList.add('flex');
+    };
+
+    const closeModal = () => {
+      modal?.classList.add('hidden');
+      modal?.classList.remove('flex');
+    };
+
+    openBtn?.addEventListener('click', openModal);
+    closeBtn?.addEventListener('click', closeModal);
+    cancelBtn?.addEventListener('click', closeModal);
+    modal?.addEventListener('click', (e) => {
+      if (e.target === modal) closeModal();
+    });
+
+    // Живое превью при вводе URL
+    imageInput?.addEventListener('input', () => {
+      const url = imageInput.value.trim();
+      if (url && previewImg && previewWrap) {
+        previewImg.src = url;
+        previewWrap.classList.remove('hidden');
+        previewWrap.classList.add('flex');
+      } else {
+        previewWrap?.classList.add('hidden');
+      }
+    });
+
+    // Обновление номеров порядка + disabled на крайних стрелках
+    const refreshOrder = () => {
+      const cards = Array.from(grid.querySelectorAll<HTMLElement>('[data-logo-id]'));
+      cards.forEach((card, index) => {
+        const indexLabel = card.querySelector('.order-index');
+        if (indexLabel) indexLabel.textContent = String(index + 1);
+
+        const leftBtn = card.querySelector<HTMLButtonElement>('.move-left-btn');
+        const rightBtn = card.querySelector<HTMLButtonElement>('.move-right-btn');
+        if (leftBtn) leftBtn.disabled = index === 0;
+        if (rightBtn) rightBtn.disabled = index === cards.length - 1;
+      });
+    };
+
+    // Делегирование кликов (работает и для новых, динамически добавленных карточек)
+    grid.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      const card = target.closest<HTMLElement>('[data-logo-id]');
+      if (!card) return;
+
+      // Удаление
+      if (target.closest('.delete-btn')) {
+        const name = card.dataset.logoName ?? 'bu loqonu';
+        if (confirm(`"${name}" silinsin?`)) {
+          card.remove();
+          refreshOrder();
+        }
+        return;
+      }
+
+      // Сдвиг влево
+      if (target.closest('.move-left-btn')) {
+        const prev = card.previousElementSibling;
+        if (prev) {
+          grid.insertBefore(card, prev);
+          refreshOrder();
+        }
+        return;
+      }
+
+      // Сдвиг вправо
+      if (target.closest('.move-right-btn')) {
+        const next = card.nextElementSibling;
+        if (next) {
+          grid.insertBefore(next, card);
+          refreshOrder();
+        }
+        return;
+      }
+    });
+
+    // Добавление нового логотипа
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = nameInput?.value.trim();
+      const image = imageInput?.value.trim();
+      if (!name || !image) return;
+
+      const newId = Date.now(); // временный уникальный id, пока нет бэкенда
+
+      const card = document.createElement('div');
+      card.dataset.logoId = String(newId);
+      card.dataset.logoName = name;
+      card.dataset.logoImage = image;
+      card.className = "group relative bg-white rounded-2xl border border-slate-200 p-6 flex flex-col items-center gap-4 hover:border-slate-300 transition-colors";
+
+      card.innerHTML = `
+        <button type="button" class="delete-btn absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-400 hover:text-red-500 hover:border-red-200 opacity-0 group-hover:opacity-100 transition-all cursor-pointer" aria-label="Sil">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        <div class="h-16 flex items-center justify-center w-full">
+          <img src="${image}" alt="${name}" class="max-h-16 max-w-full object-contain grayscale group-hover:grayscale-0 transition-all" />
+        </div>
+        <p class="text-xs font-medium text-slate-500 truncate w-full text-center">${name}</p>
+        <div class="flex items-center gap-1 mt-1">
+          <button type="button" class="move-left-btn w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-[#FE7930] hover:bg-orange-50 transition-colors cursor-pointer border-none bg-transparent disabled:opacity-20 disabled:cursor-not-allowed" aria-label="Sola köçür">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <span class="text-[10px] text-slate-300 px-1 order-index"></span>
+          <button type="button" class="move-right-btn w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-[#FE7930] hover:bg-orange-50 transition-colors cursor-pointer border-none bg-transparent disabled:opacity-20 disabled:cursor-not-allowed" aria-label="Sağa köçür">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      `;
+
+      grid.appendChild(card);
+      refreshOrder();
+      closeModal();
+
+      console.log('Loqo əlavə olundu (hələ server yoxdur):', { name, image });
+    });
+
+    refreshOrder();
+  }
+
+  initLogosAdmin();
+  document.addEventListener('astro:page-load', initLogosAdmin);
+</script>
