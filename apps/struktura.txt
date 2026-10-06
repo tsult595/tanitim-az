@@ -1,0 +1,5 @@
+ContactUs.astro — отправляет HTTP-запрос;
+contacts.routes.ts — определяет endpoint;
+contacts.controller.ts — принимает JSON и валидирует его;
+contacts.service.ts — выполняет операцию сохранения;
+D1 database — фактическое место хранения.

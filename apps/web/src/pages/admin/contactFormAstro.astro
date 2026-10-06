@@ -1,174 +1,33 @@
 ---
-// src/pages/admin/contactsAdmin.astro
 import AdminLayout from '../../layouts/AdminLayout.astro';
-
-interface ContactMessage {
-  id: number;
-  name: string;
-  subject: string;
-  phone: string;
-  message: string;
-  date: string;
-  status: 'new' | 'read' | 'replied';
-}
-
-// Моковые данные — потом заменим на запрос к серверу/БД
-const messages: ContactMessage[] = [
-  {
-    id: 1,
-    name: "Elvin Məmmədov",
-    subject: "Yeni layihə təklifi",
-    phone: "+994 50 123 45 67",
-    message: "Salam, bizim brend üçün rəqəmsal marketinq xidmətləriniz barədə məlumat almaq istəyirəm. Büdcəmiz təxminən 5000 AZN-dir.",
-    date: "2024-03-10 14:32",
-    status: "new",
-  },
-  {
-    id: 2,
-    name: "Aysel Hüseynova",
-    subject: "Influencer kampaniyası",
-    phone: "+994 55 987 65 43",
-    message: "Salam, sizinlə influencer marketinq üzrə əməkdaşlıq etmək istərdik. Zəhmət olmasa əlaqə saxlayın.",
-    date: "2024-03-09 09:15",
-    status: "read",
-  },
-  {
-    id: 3,
-    name: "Kamran Əliyev",
-    subject: "Qiymət sorğusu",
-    phone: "+994 70 555 11 22",
-    message: "Tədbir təşkili xidmətləriniz üçün qiymət siyahısı göndərə bilərsinizmi?",
-    date: "2024-03-07 18:40",
-    status: "replied",
-  },
-];
-
-const statusConfig: Record<string, { label: string; color: string }> = {
-  new: { label: "Yeni", color: "bg-[#ff5a24] text-white" },
-  read: { label: "Oxunub", color: "bg-slate-100 text-slate-500" },
-  replied: { label: "Cavablandırılıb", color: "bg-green-50 text-green-600" },
-};
 ---
 
 <AdminLayout title="Əlaqə mesajları">
   <div>
-    <!-- Заголовок -->
     <div class="mb-8">
       <h1 class="text-2xl font-bold text-slate-900">Əlaqə mesajları</h1>
       <p class="text-sm text-slate-500 mt-1">Sayt üzərindən göndərilən bütün müraciətlər</p>
     </div>
-
-    <!-- Список сообщений -->
-    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden divide-y divide-slate-100">
-      {
-        messages.map((msg) => (
-          <div
-            data-msg-id={msg.id}
-            data-status={msg.status}
-            class="message-row flex items-start gap-4 p-5 hover:bg-slate-50 transition-colors cursor-pointer"
-          >
-            <div class="w-10 h-10 rounded-full bg-orange-50 text-[#ff5a24] flex items-center justify-center font-bold text-sm flex-shrink-0">
-              {msg.name.charAt(0)}
-            </div>
-
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 mb-1">
-                <p class="font-semibold text-slate-900 truncate">{msg.name}</p>
-                <span class={`status-badge inline-block rounded-full text-[10px] font-bold px-2.5 py-0.5 ${statusConfig[msg.status].color}`}>
-                  {statusConfig[msg.status].label}
-                </span>
-              </div>
-              <p class="text-sm font-medium text-slate-700 truncate">{msg.subject}</p>
-              <p class="text-sm text-slate-500 truncate mt-0.5">{msg.message}</p>
-            </div>
-
-            <div class="flex flex-col items-end gap-2 flex-shrink-0">
-              <span class="text-xs text-slate-400">{msg.date}</span>
-              <button
-                type="button"
-                class="delete-msg-btn text-slate-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-red-50 transition-colors cursor-pointer border-none bg-transparent"
-                aria-label="Sil"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        ))
-      }
+    <div id="messages-list" class="bg-white rounded-2xl border border-slate-200 overflow-hidden divide-y divide-slate-100"></div>
+    <div id="empty-messages" class="hidden text-center py-20 text-slate-400 border border-dashed border-slate-200 rounded-2xl">
+      Hələ heç bir mesaj yoxdur
     </div>
-
-    {messages.length === 0 && (
-      <div class="text-center py-20 text-slate-400 border border-dashed border-slate-200 rounded-2xl">
-        Hələ heç bir mesaj yoxdur
-      </div>
-    )}
   </div>
 
-  <!-- Модалка просмотра + ответа -->
-  <div
-    id="message-modal"
-    class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4"
-  >
+  <div id="message-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4">
     <div class="bg-white rounded-2xl w-full max-w-lg p-6 sm:p-8 max-h-[85vh] overflow-y-auto">
       <div class="flex items-start justify-between mb-6">
-        <div>
-          <h2 id="modal-name" class="text-lg font-bold text-slate-900"></h2>
-          <p id="modal-subject" class="text-sm text-slate-500 mt-0.5"></p>
-        </div>
-        <button
-          type="button"
-          id="close-modal"
-          class="text-slate-400 hover:text-slate-700 cursor-pointer border-none bg-transparent text-xl leading-none"
-          aria-label="Bağla"
-        >
-          ✕
-        </button>
+        <div><h2 id="modal-name" class="text-lg font-bold text-slate-900"></h2><p id="modal-subject" class="text-sm text-slate-500 mt-0.5"></p></div>
+        <button type="button" id="close-modal" class="text-slate-400 hover:text-slate-700 cursor-pointer border-none bg-transparent text-xl" aria-label="Bağla">✕</button>
       </div>
-
       <div class="space-y-4 text-sm">
-        <div class="flex items-center gap-2 text-slate-500">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-          </svg>
-          <span id="modal-phone" class="font-medium text-slate-700"></span>
-        </div>
-
-        <div class="flex items-center gap-2 text-slate-400 text-xs">
-          <span id="modal-date"></span>
-        </div>
-
-        <div class="bg-slate-50 rounded-xl p-4">
-          <p id="modal-message" class="text-slate-700 leading-relaxed"></p>
-        </div>
-
-        <!-- Поле быстрого ответа -->
-        <div>
-          <label class="block text-sm font-medium text-slate-700 mb-1.5">Cavab yazın</label>
-          <textarea
-            id="reply-text"
-            rows="4"
-            class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff5a24]/40 focus:border-[#ff5a24] resize-none"
-            placeholder="Cavabınızı bura yazın..."
-          ></textarea>
-        </div>
-
+        <div class="flex items-center gap-2 text-slate-500"><span>☎</span><span id="modal-phone" class="font-medium text-slate-700"></span><span id="modal-email"></span></div>
+        <div class="text-slate-400 text-xs" id="modal-date"></div>
+        <div class="bg-slate-50 rounded-xl p-4"><p id="modal-message" class="text-slate-700 leading-relaxed whitespace-pre-wrap"></p></div>
+        <div><label class="block text-sm font-medium text-slate-700 mb-1.5">Cavab yazın</label><textarea id="reply-text" rows="4" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm resize-none" placeholder="Cavabınızı bura yazın..."></textarea></div>
         <div class="flex items-center justify-end gap-3 pt-2">
-          <button
-            type="button"
-            id="mark-read-btn"
-            class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer border-none bg-transparent"
-          >
-            Oxunmuş et
-          </button>
-          <button
-            type="button"
-            id="send-reply-btn"
-            class="px-6 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#ff5a24] hover:bg-[#e94d1b] transition-colors cursor-pointer border-none"
-          >
-            Cavab göndər
-          </button>
+          <button type="button" id="mark-read-btn" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 border-none bg-transparent cursor-pointer">Oxunmuş et</button>
+          <button type="button" id="send-reply-btn" class="px-6 py-2.5 rounded-lg text-sm font-semibold text-white bg-[#ff5a24] hover:bg-[#e94d1b] border-none cursor-pointer">Cavab göndər</button>
         </div>
       </div>
     </div>
@@ -176,115 +35,113 @@ const statusConfig: Record<string, { label: string; color: string }> = {
 </AdminLayout>
 
 <script>
-  function initContactsAdmin() {
-    const rows = document.querySelectorAll<HTMLElement>('.message-row');
-    const list = rows[0]?.parentElement;
-    if (!list || list.dataset.inited === 'true') return;
-    if (list) list.dataset.inited = 'true';
+  import {
+    deleteContact,
+    getContacts,
+    markContactAsRead,
+    replyToContact,
+    type Contact,
+  } from '../../services/contacts-admin.service';
 
+  const initContactAdmin = () => {
+    const list = document.getElementById('messages-list');
+    const empty = document.getElementById('empty-messages');
     const modal = document.getElementById('message-modal');
-    const closeBtn = document.getElementById('close-modal');
-
-    const modalName = document.getElementById('modal-name');
-    const modalSubject = document.getElementById('modal-subject');
-    const modalPhone = document.getElementById('modal-phone');
-    const modalDate = document.getElementById('modal-date');
-    const modalMessage = document.getElementById('modal-message');
     const replyText = document.getElementById('reply-text') as HTMLTextAreaElement | null;
-    const markReadBtn = document.getElementById('mark-read-btn');
-    const sendReplyBtn = document.getElementById('send-reply-btn');
+    if (!list || !empty || !modal) return;
 
-    let activeRow: HTMLElement | null = null;
-
-    const statusStyles: Record<string, { label: string; className: string }> = {
-      new: { label: "Yeni", className: "bg-[#ff5a24] text-white" },
-      read: { label: "Oxunub", className: "bg-slate-100 text-slate-500" },
-      replied: { label: "Cavablandırılıb", className: "bg-green-50 text-green-600" },
+    let contacts: Contact[] = [];
+    let active: Contact | null = null;
+    const labels = { new: ['Yeni', 'bg-[#ff5a24] text-white'], read: ['Oxunub', 'bg-slate-100 text-slate-500'], replied: ['Cavablandırılıb', 'bg-green-50 text-green-600'] };
+    const showError = (message: string, error?: unknown) => {
+      if (error) console.error(error);
+      list.innerHTML = `<p class="p-5 text-red-500">${message}</p>`;
     };
-
-    const setStatus = (row: HTMLElement, status: string) => {
-      row.dataset.status = status;
-      const badge = row.querySelector('.status-badge');
-      const config = statusStyles[status];
-      if (badge && config) {
-        badge.textContent = config.label;
-        badge.className = `status-badge inline-block rounded-full text-[10px] font-bold px-2.5 py-0.5 ${config.className}`;
-      }
+    const showAlert = (message: string, error: unknown) => {
+      console.error(error);
+      alert(message);
     };
-
-    const openModal = (row: HTMLElement) => {
-      activeRow = row;
-
-      const name = row.querySelector('p.font-semibold')?.textContent ?? '';
-      const subject = row.querySelector('p.font-medium')?.textContent ?? '';
-      const fullMessage = row.querySelector('p.text-slate-500')?.textContent ?? '';
-      const date = row.querySelector('span.text-slate-400')?.textContent ?? '';
-
-      if (modalName) modalName.textContent = name;
-      if (modalSubject) modalSubject.textContent = subject;
-      if (modalMessage) modalMessage.textContent = fullMessage;
-      if (modalDate) modalDate.textContent = date;
-      if (modalPhone) modalPhone.textContent = ''; // в моках телефон не хранится в DOM — см. примечание ниже
-      if (replyText) replyText.value = '';
-
-      // Открыли письмо → помечаем как прочитанное, если было "новое"
-      if (row.dataset.status === 'new') {
-        setStatus(row, 'read');
-      }
-
-      modal?.classList.remove('hidden');
-      modal?.classList.add('flex');
-    };
-
-    const closeModal = () => {
-      modal?.classList.add('hidden');
-      modal?.classList.remove('flex');
-      activeRow = null;
-    };
-
-    rows.forEach((row) => {
-      row.addEventListener('click', (e) => {
-        const target = e.target as HTMLElement;
-        if (target.closest('.delete-msg-btn')) return; // клик по удалению не открывает модалку
-        openModal(row);
-      });
-    });
-
-    closeBtn?.addEventListener('click', closeModal);
-    modal?.addEventListener('click', (e) => {
-      if (e.target === modal) closeModal();
-    });
-
-    document.querySelectorAll('.delete-msg-btn').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const row = (btn as HTMLElement).closest('.message-row') as HTMLElement | null;
-        const name = row?.querySelector('p.font-semibold')?.textContent ?? 'bu mesajı';
-        if (confirm(`"${name}" tərəfindən göndərilən mesaj silinsin?`)) {
-          row?.remove();
+    const escape = (value: string) => value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char] ?? char));
+    const render = () => {
+      empty.classList.toggle('hidden', contacts.length > 0);
+      list.innerHTML = contacts.map((item) => `<div data-id="${item.id}" class="message-row flex items-start gap-4 p-5 hover:bg-slate-50 cursor-pointer">
+        <div class="w-10 h-10 rounded-full bg-orange-50 text-[#ff5a24] flex items-center justify-center font-bold text-sm">${escape(item.name.charAt(0))}</div>
+        <div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1"><p class="font-semibold text-slate-900 truncate">${escape(item.name)}</p><span class="status-badge inline-block rounded-full text-[10px] font-bold px-2.5 py-0.5 ${labels[item.status][1]}">${labels[item.status][0]}</span></div><p class="text-sm font-medium text-slate-700 truncate">${escape(item.subject)}</p><p class="text-sm text-slate-500 truncate mt-0.5">${escape(item.message)}</p></div>
+        <div class="flex flex-col items-end gap-2"><span class="text-xs text-slate-400">${new Date(item.createdAt).toLocaleString()}</span><button type="button" class="delete-msg-btn text-slate-400 hover:text-red-500 p-1.5 border-none bg-transparent" aria-label="Sil">🗑</button></div>
+      </div>`).join('');
+      list.querySelectorAll<HTMLElement>('.message-row').forEach((row) => row.addEventListener('click', (event) => {
+        if ((event.target as HTMLElement).closest('.delete-msg-btn')) return;
+        void openModal(Number(row.dataset.id));
+      }));
+      list.querySelectorAll<HTMLElement>('.delete-msg-btn').forEach((button) => button.addEventListener('click', async (event) => {
+        event.stopPropagation();
+        const id = Number((button.closest('.message-row') as HTMLElement).dataset.id);
+        if (!confirm('Bu mesaj silinsin?')) return;
+        try {
+          await deleteContact(id);
+          contacts = contacts.filter((item) => item.id !== id);
+          render();
+        } catch (error) {
+          showAlert('Mesaj silinə bilmədi, yenidən cəhd edin.', error);
         }
-      });
+      }));
+    };
+    const openModal = async (id: number) => {
+      active = contacts.find((item) => item.id === id) ?? null;
+      if (!active) return;
+      try {
+        if (active.status === 'new') {
+          await markContactAsRead(id);
+          active.status = 'read';
+          render();
+        }
+        document.getElementById('modal-name')!.textContent = active.name;
+        document.getElementById('modal-subject')!.textContent = active.subject;
+        document.getElementById('modal-phone')!.textContent = active.phone;
+        document.getElementById('modal-email')!.textContent = active.email;
+        document.getElementById('modal-date')!.textContent = new Date(active.createdAt).toLocaleString();
+        document.getElementById('modal-message')!.textContent = active.message;
+        if (replyText) replyText.value = '';
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+      } catch (error) {
+        showAlert('Mesaj açıla bilmədi, yenidən cəhd edin.', error);
+      }
+    };
+    const closeModal = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); active = null; };
+    document.getElementById('close-modal')?.addEventListener('click', closeModal);
+    document.getElementById('mark-read-btn')?.addEventListener('click', async () => {
+      if (!active) return;
+      try {
+        await markContactAsRead(active.id);
+        active.status = 'read';
+        render();
+        closeModal();
+      } catch (error) {
+        showAlert('Status dəyişdirilə bilmədi, yenidən cəhd edin.', error);
+      }
     });
-
-    markReadBtn?.addEventListener('click', () => {
-      if (activeRow) setStatus(activeRow, 'read');
-      closeModal();
+    // poslat
+    document.getElementById('send-reply-btn')?.addEventListener('click', async () => {
+      if (!active || !replyText?.value.trim()) return;
+      try {
+        const result = await replyToContact(active.id, replyText.value.trim());
+        active.status = 'replied';
+        render();
+        closeModal();
+        window.location.href = result.mailto;
+      } catch (error) {
+        showAlert('Cavab göndərilə bilmədi, yenidən cəhd edin.', error);
+      }
     });
+    void getContacts()
+      .then((response) => {
+        contacts = response.data;
+        render();
+      })
+      .catch((error) => showError('Mesajları yükləmək mümkün olmadı.', error));
+  };
 
-    sendReplyBtn?.addEventListener('click', () => {
-      const reply = replyText?.value.trim();
-      if (!reply) return;
-
-      console.log('Cavab göndəriləcək (hələ server yoxdur):', {
-        to: activeRow?.querySelector('p.font-semibold')?.textContent,
-        reply,
-      });
-
-      if (activeRow) setStatus(activeRow, 'replied');
-      closeModal();
-    });
-  }
-
-  initContactsAdmin();
-  document.addEventListener('astro:page-load', initContactsAdmin);
+  document.addEventListener('astro:page-load', initContactAdmin);
+  initContactAdmin();
 </script>

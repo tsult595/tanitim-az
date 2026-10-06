@@ -37,7 +37,7 @@ const { class: className } = Astro.props;
           Layihəniz haqqında məlumat almaq və ya təklif almaq üçün bizimlə əlaqə saxlayın.
         </p>
 
-        <form class="mt-6 space-y-4">
+        <form id="contact-form" class="mt-6 space-y-4">
 
           <!-- Name -->
           <div>
@@ -50,7 +50,9 @@ const { class: className } = Astro.props;
 
             <input
               id="name"
+              name="name"
               type="text"
+              required
               placeholder="Adınızı daxil edin"
               class="h-11 w-full rounded-lg border border-gray-200 bg-[#f7f7f7] px-4 text-sm text-gray-700 outline-none transition placeholder:text-gray-400 focus:border-orange-400 focus:bg-white focus:ring-4 focus:ring-orange-400/10"
             />
@@ -67,7 +69,9 @@ const { class: className } = Astro.props;
 
             <input
               id="subject"
+              name="subject"
               type="text"
+              required
               placeholder="Mövzunu daxil edin"
               class="h-11 w-full rounded-lg border border-gray-200 bg-[#f7f7f7] px-4 text-sm text-gray-700 outline-none transition placeholder:text-gray-400 focus:border-orange-400 focus:bg-white focus:ring-4 focus:ring-orange-400/10"
             />
@@ -84,10 +88,18 @@ const { class: className } = Astro.props;
 
             <input
               id="phone"
+              name="phone"
               type="tel"
+              required
               placeholder="+994 50 000 00 00"
               class="h-11 w-full rounded-lg border border-gray-200 bg-[#f7f7f7] px-4 text-sm text-gray-700 outline-none transition placeholder:text-gray-400 focus:border-orange-400 focus:bg-white focus:ring-4 focus:ring-orange-400/10"
             />
+          </div>
+
+          <div>
+            <label for="email" class="mb-2 block text-xs font-medium text-gray-500">E-POÇT</label>
+            <input id="email" name="email" type="email" required placeholder="email@example.com"
+              class="h-11 w-full rounded-lg border border-gray-200 bg-[#f7f7f7] px-4 text-sm text-gray-700 outline-none transition placeholder:text-gray-400 focus:border-orange-400 focus:bg-white focus:ring-4 focus:ring-orange-400/10" />
           </div>
 
           <!-- Message -->
@@ -101,7 +113,9 @@ const { class: className } = Astro.props;
 
             <textarea
               id="message"
+              name="message"
               rows="4"
+              required
               placeholder="Layihəniz barədə qısa məlumat..."
               class="w-full resize-none rounded-lg border border-gray-200 bg-[#f7f7f7] px-4 py-3 text-sm text-gray-700 outline-none transition placeholder:text-gray-400 focus:border-orange-400 focus:bg-white focus:ring-4 focus:ring-orange-400/10"
             ></textarea>
@@ -179,3 +193,40 @@ const { class: className } = Astro.props;
    
   </div>
 </section>
+
+<script>
+  import { createContact } from '../../../services/contacts.service';
+
+  const initContactForm = () => {
+    const contactForm = document.getElementById('contact-form') as HTMLFormElement | null;
+    if (!contactForm || contactForm.dataset.initialized === 'true') return;
+
+    contactForm.dataset.initialized = 'true';
+
+    contactForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const form = new FormData(contactForm);
+      const button = contactForm.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+      if (button) button.disabled = true;
+      try {
+        await createContact({
+          name: String(form.get('name') ?? ''),
+          email: String(form.get('email') ?? ''),
+          subject: String(form.get('subject') ?? ''),
+          phone: String(form.get('phone') ?? ''),
+          message: String(form.get('message') ?? ''),
+        });
+        contactForm.reset();
+        alert('Mesajınız göndərildi.');
+      } catch (error) {
+        console.error(error);
+        alert('Mesaj göndərilmədi. Zəhmət olmasa yenidən cəhd edin.');
+      } finally {
+        if (button) button.disabled = false;
+      }
+    });
+  };
+
+  document.addEventListener('astro:page-load', initContactForm);
+  initContactForm();
+</script>
