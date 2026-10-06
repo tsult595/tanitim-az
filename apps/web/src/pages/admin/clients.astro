@@ -1,0 +1,208 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import getDb from '../../lib/db';
+
+export const prerender = false;
+
+// Mock data, real data will come from getDb()
+const clients = [];
+---
+
+<AdminLayout title="Müştərilər İdarəetmə">
+    <div class="mb-6 flex justify-between items-center">
+        <h2 class="text-lg font-medium text-gray-800">Müştərilərimiz</h2>
+        <button id="add-btn" class="bg-[#F0692A] hover:bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
+            + Yeni Müştəri
+        </button>
+    </div>
+
+    {clients.length === 0 ? (
+        <div class="bg-white rounded-lg shadow-sm p-10 text-center text-gray-500 border border-gray-200">
+            Heç bir müştəri tapılmadı.
+        </div>
+    ) : (
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+            {clients.map((client) => (
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-4 relative group">
+                    <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button class="bg-white p-1 rounded-full shadow hover:bg-gray-50 text-indigo-600 edit-btn" data-id={client.id}>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
+                        </button>
+                        <button class="bg-white p-1 rounded-full shadow hover:bg-gray-50 text-red-600 ml-1 delete-btn" data-id={client.id}>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="h-24 flex items-center justify-center mb-3">
+                        <img src={client.logoUrl} alt={client.name} class="max-h-full max-w-full object-contain filter grayscale hover:grayscale-0 transition-all duration-300" />
+                    </div>
+                    
+                    <div class="text-center">
+                        <h3 class="text-sm font-medium text-gray-900 truncate">{client.name}</h3>
+                        {client.website && (
+                            <a href={client.website} target="_blank" class="text-xs text-blue-500 hover:underline truncate block mt-1">{client.website}</a>
+                        )}
+                        <div class="mt-2 flex items-center justify-center space-x-2">
+                            <span class={`inline-flex h-2 w-2 rounded-full ${client.isActive ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                            <span class="text-xs text-gray-500">Sıra: {client.sortOrder}</span>
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    )}
+
+    <!-- Modal for Add/Edit -->
+    <div id="form-modal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" id="modal-backdrop"></div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+                <form id="client-form" class="p-6">
+                    <div class="flex justify-between items-center mb-5">
+                        <h3 class="text-lg font-medium text-gray-900" id="modal-title">Yeni Müştəri</h3>
+                        <button type="button" id="close-modal" class="text-gray-400 hover:text-gray-500">
+                            <span class="sr-only">Bağla</span>
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <input type="hidden" id="client-id" name="id" />
+                        
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700">Şirkət Adı</label>
+                            <input type="text" name="name" id="name" required class="mt-1 focus:ring-[#F0692A] focus:border-[#F0692A] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2 border" />
+                        </div>
+
+                        <div>
+                            <label for="logo" class="block text-sm font-medium text-gray-700">Loqo (R2 yüklənmə)</label>
+                            <input type="file" name="logo" id="logo" accept="image/*" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-[#F0692A] hover:file:bg-orange-100" />
+                            <input type="hidden" name="logoUrl" id="logoUrl" />
+                        </div>
+                        
+                        <div>
+                            <label for="website" class="block text-sm font-medium text-gray-700">Vebsayt (İstəyə bağlı)</label>
+                            <input type="url" name="website" id="website" class="mt-1 focus:ring-[#F0692A] focus:border-[#F0692A] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2 border" />
+                        </div>
+                        
+                        <div>
+                            <label for="sortOrder" class="block text-sm font-medium text-gray-700">Sıra nömrəsi</label>
+                            <input type="number" name="sortOrder" id="sortOrder" value="0" class="mt-1 focus:ring-[#F0692A] focus:border-[#F0692A] block w-full shadow-sm sm:text-sm border-gray-300 rounded-md p-2 border" />
+                        </div>
+                        
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="isActive" name="isActive" type="checkbox" class="focus:ring-[#F0692A] h-4 w-4 text-[#F0692A] border-gray-300 rounded" checked>
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="isActive" class="font-medium text-gray-700">Aktivdir?</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 flex justify-end">
+                        <button type="button" id="cancel-btn" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none mr-3">
+                            Ləğv et
+                        </button>
+                        <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-[#F0692A] hover:bg-orange-600 focus:outline-none">
+                            Yadda saxla
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</AdminLayout>
+
+<script>
+    const modal = document.getElementById('form-modal');
+    const closeBtn = document.getElementById('close-modal');
+    const cancelBtn = document.getElementById('cancel-btn');
+    const addBtn = document.getElementById('add-btn');
+    const backdrop = document.getElementById('modal-backdrop');
+    const form = document.getElementById('client-form') as HTMLFormElement;
+    const modalTitle = document.getElementById('modal-title');
+    
+    function openModal(isEdit = false) {
+        modal?.classList.remove('hidden');
+        if (modalTitle) modalTitle.textContent = isEdit ? 'Müştərini Redaktə et' : 'Yeni Müştəri';
+        if (!isEdit) form?.reset();
+    }
+    
+    function closeModal() {
+        modal?.classList.add('hidden');
+    }
+    
+    addBtn?.addEventListener('click', () => openModal(false));
+    closeBtn?.addEventListener('click', closeModal);
+    cancelBtn?.addEventListener('click', closeModal);
+    backdrop?.addEventListener('click', closeModal);
+
+    form?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        const fileInput = document.getElementById('logo') as HTMLInputElement;
+        
+        if (fileInput?.files && fileInput.files[0]) {
+            const uploadData = new FormData();
+            uploadData.append('file', fileInput.files[0]);
+            
+            try {
+                const uploadRes = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: uploadData
+                });
+                if (uploadRes.ok) {
+                    const { url } = await uploadRes.json();
+                    formData.set('logoUrl', url);
+                }
+            } catch (err) {
+                console.error("Upload failed", err);
+                alert("Şəkil yüklənərkən xəta baş verdi");
+                return;
+            }
+        }
+        
+        const data = Object.fromEntries(formData.entries());
+        data.isActive = formData.has('isActive') ? 'true' : 'false';
+        
+        const isEdit = !!data.id;
+        const url = isEdit ? `/api/clients/${data.id}` : '/api/clients';
+        const method = isEdit ? 'PUT' : 'POST';
+        
+        try {
+            const res = await fetch(url, {
+                method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            if (res.ok) window.location.reload();
+            else alert('Xəta baş verdi.');
+        } catch (err) {
+            console.error(err);
+        }
+    });
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const btnEl = e.currentTarget as HTMLButtonElement;
+            const id = btnEl.getAttribute('data-id');
+            if (confirm('Silmək istədiyinizə əminsiniz?')) {
+                try {
+                    const res = await fetch(`/api/clients/${id}`, { method: 'DELETE' });
+                    if (res.ok) window.location.reload();
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        });
+    });
+</script>

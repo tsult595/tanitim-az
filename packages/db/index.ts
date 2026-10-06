@@ -1,1 +1,2 @@
-console.log("Hello via Bun!");
+export * from './schema';
+export { drizzle } from 'drizzle-orm/d1';
