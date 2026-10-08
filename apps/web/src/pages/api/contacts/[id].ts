@@ -1,11 +1,12 @@
 export const prerender = false;
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { getDb, schema } from '../../../lib/db';
 import { eq } from 'drizzle-orm';
 
 export const PUT: APIRoute = async (context) => {
   try {
-    const { DB } = context.locals.runtime.env;
+    const { DB } = env;
     const db = getDb(DB);
     const id = parseInt(context.params.id as string);
     const body = await context.request.json();
@@ -19,7 +20,7 @@ export const PUT: APIRoute = async (context) => {
 
 export const DELETE: APIRoute = async (context) => {
   try {
-    const { DB } = context.locals.runtime.env;
+    const { DB } = env;
     const db = getDb(DB);
     const id = parseInt(context.params.id as string);
     await db.delete(schema.contacts).where(eq(schema.contacts.id, id));

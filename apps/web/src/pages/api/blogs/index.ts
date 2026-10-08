@@ -1,11 +1,12 @@
 export const prerender = false;
 import type { APIRoute } from 'astro';
+import { env } from 'cloudflare:workers';
 import { getDb, schema } from '../../../lib/db';
 import { eq } from 'drizzle-orm';
 
 export const GET: APIRoute = async (context) => {
   try {
-    const { DB } = context.locals.runtime.env;
+    const { DB } = env;
     const db = getDb(DB);
     const lang = context.url.searchParams.get('lang');
     
@@ -23,7 +24,7 @@ export const GET: APIRoute = async (context) => {
 
 export const POST: APIRoute = async (context) => {
   try {
-    const { DB } = context.locals.runtime.env;
+    const { DB } = env;
     const db = getDb(DB);
     const body = await context.request.json();
     const result = await db.insert(schema.blogs).values(body).returning();

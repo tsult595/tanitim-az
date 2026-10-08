@@ -6,7 +6,7 @@ export function getDb(d1: D1Database) {
 }
 
 export function getR2Url(key: string): string {
-  return `https://cdn.tanitim.az/${key}`;
+  return `/api/r2/${key}`;
 }
 
 export { schema };

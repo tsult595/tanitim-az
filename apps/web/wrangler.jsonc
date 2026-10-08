@@ -4,6 +4,13 @@
   "compatibility_date": "2026-08-28",
   "account_id": "52b9359bbe5496b5651196030199414a",
   "workers_dev": false,
+  "r2_buckets": [
+    {
+      "binding": "R2_BUCKET",
+      "bucket_name": "tanitim",
+      "remote": true
+    }
+  ],
   "env": {
     "beta": {
       "name": "tanidim-az-web-beta",

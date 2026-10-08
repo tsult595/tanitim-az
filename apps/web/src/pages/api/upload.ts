@@ -1,9 +1,18 @@
 export const prerender = false;
+import { env } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 
 export const POST: APIRoute = async (context) => {
   try {
-    const { R2_BUCKET } = context.locals.runtime.env;
+    const R2_BUCKET = env.R2_BUCKET;
+
+    if (!R2_BUCKET) {
+      return new Response(JSON.stringify({ error: 'R2 binding is not configured' }), {
+        status: 503,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const formData = await context.request.formData();
     const file = formData.get('file') as File;
     
@@ -23,7 +32,7 @@ export const POST: APIRoute = async (context) => {
       },
     });
 
-    const url = `https://cdn.tanitim.az/${key}`;
+    const url = `/api/r2/${key}`;
     
     return new Response(JSON.stringify({ url, key }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   } catch (error: any) {

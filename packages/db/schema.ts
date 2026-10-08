@@ -69,3 +69,5 @@ export const settings = sqliteTable('settings', {
   value: text('value').notNull().default(''),
   updatedAt: text('updated_at').notNull().$defaultFn(() => new Date().toISOString()),
 });
+
+

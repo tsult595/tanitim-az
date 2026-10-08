@@ -1,0 +1,81 @@
+---
+
+
+interface Props {
+  title: string;
+  description?: string;
+  badge?: string;
+  icon?: string;
+  variant?: 'gray' | 'peach' | 'orange';
+  class?: string;
+  img?: string
+}
+
+const { 
+  title, 
+  badge, 
+  icon, 
+  variant = 'gray', 
+  img,
+  class: className 
+} = Astro.props;
+
+
+---
+
+<div
+  class:list={[
+    "relative flex min-w-[120px] min-h-[120px] sm:min-h-[240px] w-full overflow-hidden rounded-2xl bg-[#FFECE2] sm:rounded-3xl",
+    "transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-orange-500/10",
+    className
+  ]}
+  id="service-card"
+>
+  <!-- Левая часть -->
+  <div class="relative z-10 flex w-[60%] flex-col justify-between p-2 sm:p-8">
+    
+    {icon && (
+      <div
+        class="
+          flex h-8 w-8 items-center justify-center
+          rounded-xl bg-orange-500/10 text-orange-600
+          sm:h-12 sm:w-12 sm:rounded-2xl
+        "
+      >
+        <Fragment set:html={icon} />
+      </div>
+    )}
+
+    <h3
+      class="
+        text-lg font-semibold leading-snug tracking-tight
+        sm:text-xl
+        md:text-2xl
+      "
+    >
+      {title}
+    </h3>
+
+  </div>
+
+  <!-- Правая картинка -->
+  <div
+    class="
+      absolute right-0 top-0
+      h-full w-[55%]
+      overflow-hidden
+    "
+    style="
+    clip-path: polygon(35% 0,
+    100% 0,
+    100% 150%,
+    0 0%);
+    "
+  >
+    <img
+      src={img}
+      alt={title}
+      class="h-full w-full object-cover"
+    />
+  </div>
+</div>

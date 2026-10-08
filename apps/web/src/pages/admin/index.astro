@@ -2,6 +2,7 @@
 import AdminLayout from '../../layouts/AdminLayout.astro';
 import getDb from '../../lib/db';
 import { count } from 'drizzle-orm';
+import { env } from 'cloudflare:workers';
 // import { blogs, services, clients, contacts } from '@repo/db/schema'; // Assuming schema
 
 export const prerender = false;
@@ -15,7 +16,7 @@ const stats = {
 };
 
 try {
-    const db = getDb(Astro.locals.runtime.env.DB);
+    const db = getDb(env.DB);
     // Real counts can be implemented here once schema is available
     // stats.blogs = (await db.select({ value: count() }).from(blogs))[0].value;
 } catch (error) {

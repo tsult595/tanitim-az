@@ -7,6 +7,10 @@ interface Env {
   R2_BUCKET: R2Bucket;
 }
 
+declare module 'cloudflare:workers' {
+  export const env: Env;
+}
+
 declare namespace App {
   interface Locals extends Runtime {}
 }
