@@ -48,7 +48,7 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/web
           command: deploy --env beta --message "git-action by theoksigen"
-          wranglerVersion: "4.147.0"
+          wranglerVersion: "4.127.0"
 
       - name: Deploy under-construction site
         if: github.ref_name == 'underconstruction'
@@ -58,4 +58,4 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: apps/web
           command: deploy --env production --message "git-action by theoksigen"
-          wranglerVersion: "4.147.0"
+          wranglerVersion: "4.127.0"
