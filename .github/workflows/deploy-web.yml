@@ -25,6 +25,8 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_ENV: ${{ github.ref_name == 'main' && 'production' || 'beta' }}
 
     steps:
       - name: Checkout
@@ -41,17 +43,8 @@ jobs:
       - name: Build
         run: bun run build 2>&1 | tail -n 50
 
-      - name: Deploy stable site to beta
-        if: github.ref_name == 'main'
-        run: bunx wrangler deploy --env beta --message "git-action by theoksigen"
-        working-directory: apps/web
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
-      - name: Deploy under-construction site to production
-        if: github.ref_name == 'underconstruction'
-        run: bunx wrangler deploy --env production --message "git-action by theoksigen"
+      - name: Deploy selected environment
+        run: bunx wrangler deploy --message "git-action by theoksigen"
         working-directory: apps/web
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}

@@ -5,6 +5,7 @@ type Runtime = import('@astrojs/cloudflare').Runtime<Env>;
 interface Env {
   DB: D1Database;
   R2_BUCKET: R2Bucket;
+  MAINTENANCE_MODE: 'true' | 'false';
 }
 
 declare module 'cloudflare:workers' {

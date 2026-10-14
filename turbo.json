@@ -3,6 +3,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      "env": ["CLOUDFLARE_ENV"],
       "outputs": ["dist/**", ".astro/**"]
     },
     "dev": {

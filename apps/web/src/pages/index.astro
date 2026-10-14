@@ -1,11 +1,16 @@
 ---
-
+import { env } from 'cloudflare:workers';
+import MaintenancePage from '../components/user/MaintenancePage.astro';
 import Hero from '../components/user/mainPage/Hero.astro';
 import UserLayout from '../layouts/UserLayout.astro';
 ---
 
-<UserLayout title="Tanitim.az — Главная">
-  <main class="w-full">
-    <Hero class="bg-[#FFFFFF] my-custom-class" />
-  </main>
-</UserLayout>
+{env.MAINTENANCE_MODE === 'true' ? (
+  <MaintenancePage />
+) : (
+  <UserLayout title="Tanitim.az — Главная">
+    <main class="w-full">
+      <Hero class="bg-[#FFFFFF] my-custom-class" />
+    </main>
+  </UserLayout>
+)}

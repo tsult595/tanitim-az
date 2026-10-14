@@ -8,10 +8,10 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "deploy": "bun run build && wrangler deploy --env production",
-    "deploy:beta": "bun run build && wrangler deploy --env beta",
-    "deploy:dry": "bun run build && wrangler deploy --env production --dry-run",
-    "deploy:dry:beta": "bun run build && wrangler deploy --env beta --dry-run",
+    "deploy": "CLOUDFLARE_ENV=production bun run build && wrangler deploy",
+    "deploy:beta": "CLOUDFLARE_ENV=beta bun run build && wrangler deploy",
+    "deploy:dry": "CLOUDFLARE_ENV=production bun run build && wrangler deploy --dry-run",
+    "deploy:dry:beta": "CLOUDFLARE_ENV=beta bun run build && wrangler deploy --dry-run",
     "preview": "astro preview",
     "astro": "astro"
   },
