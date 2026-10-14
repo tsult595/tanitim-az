@@ -21,6 +21,8 @@ export const services = sqliteTable('services', {
   title: text('title').notNull(),
   description: text('description').notNull().default(''),
   icon: text('icon').default(''),
+  imageUrl: text('image_url').notNull().default(''),
+  variant: text('variant').notNull().default('gray'),
   badge: text('badge').default(''),
   actionText: text('action_text').default(''),
   sortOrder: integer('sort_order').notNull().default(0),
@@ -69,5 +71,4 @@ export const settings = sqliteTable('settings', {
   value: text('value').notNull().default(''),
   updatedAt: text('updated_at').notNull().$defaultFn(() => new Date().toISOString()),
 });
-
 
