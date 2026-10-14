@@ -10,8 +10,6 @@ interface Props {
 }
 
 // Имена файлов писать буква в букву (на Linux-хостинге регистр важен)
-const r2Url = '/api/r2';
-
 const logoFiles = [
   "ABB", "Anker", "Avatr", "aviasales", "Azeerlotoreya", "Azpulmat",
   "Baghdan", "Bakcell", "Birmarket", "Carprisa", "Danone", "Dr.Oetker",
@@ -24,7 +22,7 @@ const logoFiles = [
 
 const defaultClients: Client[] = logoFiles.map((file) => ({
   name: file,
-  logo: `${r2Url}/clients/${file}.svg`,
+  logo: `/clients/${file}.svg`,
 }));
 
 const { clients = defaultClients, class: className } = Astro.props;
