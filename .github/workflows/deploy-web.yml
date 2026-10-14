@@ -40,20 +40,18 @@ jobs:
       - name: Build
         run: bun run build 2>&1 | tail -n 50
 
-      - name: Deploy production site
+      - name: Deploy stable site to beta
         if: github.ref_name == 'main'
-        run: bunx wrangler deploy --env production --message "git-action by theoksigen"
-        working-directory: apps/web
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-
-      - name: Deploy beta under-construction site
-        if: github.ref_name == 'underconstruction'
         run: bunx wrangler deploy --env beta --message "git-action by theoksigen"
         working-directory: apps/web
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-# Production deploy uses main; beta deploy uses underconstruction.
+      - name: Deploy under-construction site to production
+        if: github.ref_name == 'underconstruction'
+        run: bunx wrangler deploy --env production --message "git-action by theoksigen"
+        working-directory: apps/web
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
