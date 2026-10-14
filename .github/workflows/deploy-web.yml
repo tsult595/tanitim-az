@@ -59,3 +59,5 @@ jobs:
           workingDirectory: apps/web
           command: deploy --env beta --message "git-action by theoksigen"
           wranglerVersion: "4.150.0"
+
+# Production deploy uses main; beta deploy uses underconstruction.
