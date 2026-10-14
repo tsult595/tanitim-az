@@ -2,44 +2,6 @@
 // src/pages/admin/servicesAdmin.astro
 import AdminLayout from '../../layouts/AdminLayout.astro';
 
-interface Service {
-  id: number;
-  title: string;
-  variant: 'gray' | 'peach' | 'orange';
-  img: string;
-  icon: string;
-}
-
-// Начальные карточки отображаются сразу, затем заменяются данными из D1 через /api/services.
-const services: Service[] = [
-  {
-    id: 1,
-    title: "Tədbirlərin təşkili",
-    variant: "gray",
-    img: "/aboutUs/btl.png",
-    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>`,
-  },
-  {
-    id: 2,
-    title: "Rəqəmsal marketinq",
-    variant: "peach",
-    img: "/aboutUs/Content_Creation.png",
-    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>`,
-  },
-  {
-    id: 3,
-    title: "İnfluenser marketinq",
-    variant: "orange",
-    img: "/aboutUs/Digital_Marketing.png",
-    icon: `<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>`,
-  },
-];
-
-const variantColors: Record<string, string> = {
-  gray: "bg-slate-100 text-slate-600",
-  peach: "bg-orange-50 text-orange-400",
-  orange: "bg-orange-100 text-[#FE7930]",
-};
 ---
 
 <AdminLayout title="Xidmətlər">
@@ -73,67 +35,8 @@ const variantColors: Record<string, string> = {
             <th class="px-6 py-4 font-medium text-right">Əməliyyatlar</th>
           </tr>
         </thead>
-        <tbody id="services-table-body" class="divide-y divide-slate-100">
-          {
-            services.map((service) => (
-              <tr
-                data-service-id={service.id}
-                data-icon={service.icon}
-                class="hover:bg-slate-50 transition-colors"
-              >
-                <td class="px-6 py-4">
-                  <img src={service.img} alt={service.title} class="w-14 h-14 rounded-lg object-cover bg-slate-50" />
-                </td>
-                <td class="px-6 py-4">
-                  <p class="font-semibold text-slate-900 service-title">{service.title}</p>
-                </td>
-                <td class="px-6 py-4">
-                  <div
-                    class:list={["w-9 h-9 rounded-lg flex items-center justify-center", variantColors[service.variant]]}
-                    set:html={service.icon}
-                  />
-                </td>
-                <td class="px-6 py-4">
-                  <span
-                    class:list={["inline-block rounded-full text-xs font-bold px-3 py-1 service-variant", variantColors[service.variant]]}
-                    data-value={service.variant}
-                  >
-                    {service.variant}
-                  </span>
-                </td>
-                <td class="px-6 py-4">
-                  <div class="flex items-center justify-end gap-2">
-                    <button
-                      type="button"
-                      class="edit-btn text-slate-500 hover:text-[#FE7930] hover:bg-orange-50 p-2 rounded-lg transition-colors cursor-pointer border-none bg-transparent"
-                      aria-label="Redaktə et"
-                    >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
-                    </button>
-                    <button
-                      type="button"
-                      class="delete-btn text-slate-500 hover:text-red-500 hover:bg-red-50 p-2 rounded-lg transition-colors cursor-pointer border-none bg-transparent"
-                      aria-label="Sil"
-                    >
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))
-          }
-        </tbody>
+        <tbody id="services-table-body" class="divide-y divide-slate-100"></tbody>
       </table>
-
-      {services.length === 0 && (
-        <div class="text-center py-16 text-slate-400">
-          Hələ heç bir xidmət əlavə edilməyib
-        </div>
-      )}
     </div>
   </div>
 
