@@ -69,8 +69,10 @@ const fallbackServices = [
   }
 ];
 
-const storedServices = await getDb(env.DB).select().from(schema.services)
-  .where(eq(schema.services.isActive, true));
+const storedServices = env.DB
+  ? await getDb(env.DB).select().from(schema.services)
+      .where(eq(schema.services.isActive, true))
+  : [];
 const services = storedServices.length > 0
   ? storedServices.map((service) => ({
       title: service.title,
