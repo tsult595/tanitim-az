@@ -4,6 +4,14 @@
   "compatibility_date": "2026-08-28",
   "account_id": "dd992ffc582324e1ca427b11b048d70e",
   "workers_dev": false,
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "tanitim-personal",
+      "database_id": "58c37af0-3023-41bd-bdc3-28faa8cb1138",
+      "migrations_dir": "../../packages/db/migrations"
+    }
+  ],
   "env": {
     "beta": {
       "name": "tanitim-personal-web-beta",
