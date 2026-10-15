@@ -1,0 +1,61 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Products">
+  <div class="mx-auto max-w-6xl">
+    <div class="mb-8 flex items-center justify-between">
+      <div><h1 class="text-2xl font-bold text-slate-900">Products</h1><p class="mt-1 text-sm text-slate-500">Məhsul kartlarını idarə edin.</p></div>
+      <button id="add-product" type="button" class="rounded-lg bg-[#FE7930] px-5 py-2.5 text-sm font-semibold text-white">Yeni məhsul</button>
+    </div>
+    <div id="product-error" class="mb-4 hidden rounded-lg bg-red-50 p-3 text-sm text-red-600"></div>
+    <div id="products-list" class="grid gap-4 md:grid-cols-2"></div>
+  </div>
+
+  <div id="product-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 p-4">
+    <div class="max-h-[90vh] w-full max-w-xl overflow-y-auto rounded-2xl bg-white p-6">
+      <div class="mb-6 flex items-center justify-between"><h2 id="modal-title" class="text-lg font-bold">Yeni məhsul</h2><button id="close-modal" type="button" class="text-xl text-slate-400">✕</button></div>
+      <form id="product-form" class="grid gap-4">
+        <input id="product-id" type="hidden" />
+        <label class="text-sm font-medium text-slate-700">Ad<input id="product-name" required class="mt-1.5 w-full rounded-lg border border-slate-300 px-4 py-2.5" /></label>
+        <label class="text-sm font-medium text-slate-700">Description<textarea id="product-description" required rows="5" class="mt-1.5 w-full rounded-lg border border-slate-300 px-4 py-2.5"></textarea></label>
+        <label class="text-sm font-medium text-slate-700">Button text<input id="product-button" class="mt-1.5 w-full rounded-lg border border-slate-300 px-4 py-2.5" /></label>
+        <label class="text-sm font-medium text-slate-700">Link (href)<input id="product-href" type="url" class="mt-1.5 w-full rounded-lg border border-slate-300 px-4 py-2.5" /></label>
+        <label class="text-sm font-medium text-slate-700">Şəkil faylı<input id="product-file" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml" class="mt-1.5 w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm" /><span class="mt-1 block text-xs font-normal text-slate-500">PNG, JPG, WebP, GIF və SVG; maksimum 10 MB.</span></label>
+        <label class="text-sm font-medium text-slate-700">Şəkil URL (istəyə görə)<input id="product-image" class="mt-1.5 w-full rounded-lg border border-slate-300 px-4 py-2.5" placeholder="/api/r2/products/..." /></label>
+        <label class="text-sm font-medium text-slate-700">Accent classes<input id="product-accent" class="mt-1.5 w-full rounded-lg border border-slate-300 px-4 py-2.5" /></label>
+        <div class="flex justify-end gap-3 pt-2"><button id="cancel-modal" type="button" class="rounded-lg px-5 py-2.5 text-sm text-slate-600">Ləğv et</button><button class="rounded-lg bg-[#FE7930] px-6 py-2.5 text-sm font-semibold text-white">Yadda saxla</button></div>
+      </form>
+    </div>
+  </div>
+</AdminLayout>
+
+<script>
+  import { createProduct, deleteProduct, getProducts, updateProduct, uploadProductImage, type Product } from '../../services/products.service';
+  const initProductsAdmin = () => {
+    const list = document.getElementById('products-list');
+    const modal = document.getElementById('product-modal');
+    const form = document.getElementById('product-form') as HTMLFormElement | null;
+    if (!list || !modal || !form || form.dataset.initialized === 'true') return;
+    form.dataset.initialized = 'true';
+    const error = document.getElementById('product-error');
+    const input = (id: string) => document.getElementById(id) as HTMLInputElement;
+    const text = (id: string) => document.getElementById(id) as HTMLTextAreaElement;
+    let products: Product[] = [];
+    const showError = (message: string, cause?: unknown) => { if (cause) console.error(cause); error!.textContent = message; error!.classList.remove('hidden'); };
+    const escape = (value: string) => value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[char] ?? char));
+    const render = () => { list.innerHTML = products.map((product) => `<article class="rounded-2xl border border-slate-200 bg-white p-4"><img src="${escape(product.imageUrl)}" alt="${escape(product.name)}" class="mb-4 h-40 w-full rounded-lg object-cover bg-slate-50" /><h2 class="font-semibold">${escape(product.name)}</h2><p class="mt-2 line-clamp-3 text-sm text-slate-500">${escape(product.description)}</p><div class="mt-4 flex justify-end gap-2"><button type="button" data-edit="${product.id}" class="rounded-lg px-3 py-2 text-sm text-orange-600">Redaktə</button><button type="button" data-delete="${product.id}" class="rounded-lg px-3 py-2 text-sm text-red-600">Sil</button></div></article>`).join(''); };
+    const setModal = (product?: Product) => { input('product-id').value = String(product?.id ?? ''); input('product-name').value = product?.name ?? ''; text('product-description').value = product?.description ?? ''; input('product-button').value = product?.buttonText ?? ''; input('product-href').value = product?.href ?? ''; input('product-image').value = product?.imageUrl ?? ''; input('product-file').value = ''; input('product-accent').value = product?.accent ?? 'from-slate-100 to-white'; document.getElementById('modal-title')!.textContent = product ? 'Məhsulu redaktə et' : 'Yeni məhsul'; modal.classList.remove('hidden'); modal.classList.add('flex'); };
+    const close = () => { modal.classList.add('hidden'); modal.classList.remove('flex'); };
+    const load = async () => { try { products = await getProducts(); render(); } catch (cause) { showError('Məhsulları yükləmək mümkün olmadı.', cause); } };
+    document.getElementById('add-product')?.addEventListener('click', () => setModal());
+    document.getElementById('close-modal')?.addEventListener('click', close);
+    document.getElementById('cancel-modal')?.addEventListener('click', close);
+    list.addEventListener('click', async (event) => { const target = event.target as HTMLElement; const edit = target.closest<HTMLElement>('[data-edit]'); const remove = target.closest<HTMLElement>('[data-delete]'); try { if (edit) setModal(products.find((item) => item.id === Number(edit.dataset.edit))); if (remove && confirm('Bu məhsul silinsin?'))
+    { await deleteProduct(Number(remove.dataset.delete)); await load(); } } catch (cause) { showError('Əməliyyatı yerinə yetirmək mümkün olmadı.', cause); } });
+    form.addEventListener('submit', async (event) => { event.preventDefault(); try { const file = (document.getElementById('product-file') as HTMLInputElement).files?.[0]; let imageUrl = input('product-image').value.trim(); if (file) { imageUrl = (await uploadProductImage(file)).url; } if (!imageUrl) throw new Error('Image is required'); const data = { name: input('product-name').value, description: text('product-description').value, buttonText: input('product-button').value, href: input('product-href').value, imageUrl, accent: input('product-accent').value || 'from-slate-100 to-white', sortOrder: Number(input('product-id').value) || products.length + 1, isActive: true }; const id = Number(input('product-id').value); if (id) await updateProduct(id, data); else await createProduct(data); close(); await load(); } catch (cause) { showError(cause instanceof Error && cause.message.includes('upload') ? 'Şəkli yükləmək mümkün olmadı.' : 'Məhsulu saxlamaq mümkün olmadı.', cause); } });
+    void load();
+  };
+  initProductsAdmin();
+  document.addEventListener('astro:page-load', initProductsAdmin);
+</script>

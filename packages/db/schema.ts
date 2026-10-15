@@ -80,3 +80,17 @@ export const aboutContent = sqliteTable('about_content', {
   images: text('images').notNull().default('[]'),
   updatedAt: text('updated_at').notNull().$defaultFn(() => new Date().toISOString()),
 });
+
+export const products = sqliteTable('products', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  name: text('name').notNull(),
+  description: text('description').notNull().default(''),
+  buttonText: text('button_text').notNull().default(''),
+  href: text('href').notNull().default(''),
+  accent: text('accent').notNull().default('from-slate-100 to-white'),
+  imageUrl: text('image_url').notNull().default(''),
+  sortOrder: integer('sort_order').notNull().default(0),
+  isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
+  createdAt: text('created_at').notNull().$defaultFn(() => new Date().toISOString()),
+  updatedAt: text('updated_at').notNull().$defaultFn(() => new Date().toISOString()),
+});

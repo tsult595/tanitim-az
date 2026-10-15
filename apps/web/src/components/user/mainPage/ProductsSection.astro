@@ -3,10 +3,10 @@
 interface Product {
   name: string;
   description: string;
-  buttonText?: string;
-  href?: string;
-  accent?: string; // акцентный цвет мокапа
-  imgSrc: string; // путь к изображению мокапа
+  buttonText: string;
+  href: string;
+  accent: string;
+  imageUrl: string;
 }
 
 interface Props {
@@ -21,26 +21,7 @@ const {
   class: className,
 } = Astro.props;
 
-const products: Product[] = [
-  {
-    name: "INFLUENCER.AZ",
-    description:
-      "Azərbaycanın ən böyük və funksional influenser bazası. Kampaniyalarınızı planlaşdırın, uyğun influenserləri tapın və nəticələri real vaxtda izləyin.",
-    buttonText: "ƏTRAFLI BAX",
-    href: "https://influencer.az",
-    accent: "from-rose-100 via-orange-50 to-white",
-    imgSrc: "../../../../public/influencerpng.png",
-  },
-  {
-    name: "UTM.AZ",
-    description:
-      "Kampaniyalarınızın effektivliyini ölçmək üçün mükəmməl analitika aləti. Linklərinizi qısaldın, izləyin və auditoriyanızı daha yaxşı anlayın.",
-    buttonText: "PLATFORMAYA KEÇİD",
-    href: "https://utm.az",
-    accent: "from-emerald-100 via-green-50 to-white",
-    imgSrc: "../../../../public/utm.az.png",
-  },
-];
+const products: Product[] = [];
 ---
 
 <section id="products-section" class:list={["w-full py-10 sm:py-12 md:py-16 lg:py-20", className]}>
@@ -51,7 +32,7 @@ const products: Product[] = [
       </h2>
     </div>
 
-    <div class="flex flex-col gap-20 sm:gap-28 bg-white rounded-2xl p-0 sm:p-6 md:p-9 lg:p-12">
+    <div data-products-list class="flex flex-col gap-20 sm:gap-28 bg-white rounded-2xl p-0 sm:p-6 md:p-9 lg:p-12">
     {
       products.map((product, i) => (
         <div
@@ -77,7 +58,7 @@ const products: Product[] = [
             {/* Контент мокапа */}
             <div class="relative p-4 sm:p-6 min-h-[220px] sm:min-h-[320px] border-5 border-gray-100 rounded-b-2xl overflow-hidden">
                 <img
-                    src={product.imgSrc}
+                    src={product.imageUrl}
                     alt={product.name}
                     class="w-full h-full object-cover rounded-lg absolute top-0 left-0"
                 />
@@ -127,3 +108,26 @@ const products: Product[] = [
     </div>
   </div>
 </section>
+
+<script>
+  import { getProducts } from '../../../services/products.service';
+  const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (character) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;',
+  }[character] ?? character));
+  const loadProducts = async () => {
+    const response = await getProducts();
+    const section = document.querySelector<HTMLElement>('#products-section');
+    if (!section) return;
+    const container = section.querySelector('[data-products-list]');
+    if (!container) return;
+    container.innerHTML = response.filter((product) => product.isActive !== false).map((product, i) => `
+      <div class="grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16">
+        <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br ${escapeHtml(product.accent)} shadow-xl shadow-slate-200/50 ${i % 2 === 1 ? 'lg:order-1' : 'lg:order-2'}">
+          <div class="flex items-center gap-1.5 bg-gray-100 px-4 py-3"><span class="h-2.5 w-2.5 rounded-full bg-gray-500"></span><span class="h-2.5 w-2.5 rounded-full bg-gray-500"></span><span class="h-2.5 w-2.5 rounded-full bg-gray-500"></span></div>
+          <div class="relative min-h-[220px] overflow-hidden rounded-b-2xl border-5 border-gray-100 p-4 sm:min-h-[320px]"><img src="${escapeHtml(product.imageUrl)}" alt="${escapeHtml(product.name)}" class="absolute left-0 top-0 h-full w-full rounded-lg object-cover" /></div>
+        </div>
+        <div class="flex flex-col gap-6 ${i % 2 === 1 ? 'lg:order-2' : 'lg:order-1'}"><h3 class="text-xl leading-snug tracking-tight sm:text-4xl">${escapeHtml(product.name)}</h3><p class="text-sm leading-relaxed text-slate-600 sm:text-base">${escapeHtml(product.description)}</p>${product.buttonText && product.href ? `<a href="${escapeHtml(product.href)}" class="flex w-fit items-center gap-3 rounded-lg bg-orange-400 px-10 py-2 text-sm text-white transition-all hover:scale-105">${escapeHtml(product.buttonText)}</a>` : ''}</div>
+      </div>`).join('');
+  };
+  loadProducts().catch((error) => console.error('Failed to load products', error));
+</script>
