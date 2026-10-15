@@ -18,7 +18,18 @@ const request = async <T>(path: string, init?: RequestInit): Promise<T> => {
   return response.json() as Promise<T>;
 };
 
-export const getClients = () => request<Client[]>('');
+const normalizeLogoUrl = (client: Client): Client => ({
+  ...client,
+  logoUrl: client.logoUrl.replace(
+    /^https:\/\/cdn\.tanitim\.az\/clients\//,
+    '/clients/',
+  ),
+});
+
+export const getClients = async () => {
+  const clients = await request<Client[]>('');
+  return clients.map(normalizeLogoUrl);
+};
 
 export const createClient = (data: Pick<Client, 'name' | 'logoUrl'>) =>
   request<Client>('', {

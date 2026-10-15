@@ -72,3 +72,11 @@ export const settings = sqliteTable('settings', {
   updatedAt: text('updated_at').notNull().$defaultFn(() => new Date().toISOString()),
 });
 
+export const aboutContent = sqliteTable('about_content', {
+  id: integer('id').primaryKey({ autoIncrement: true }),
+  title: text('title').notNull().default('Biz Kimik?'),
+  description: text('description').notNull().default(''),
+  buttonText: text('button_text').notNull().default('Xidmətlərimiz'),
+  images: text('images').notNull().default('[]'),
+  updatedAt: text('updated_at').notNull().$defaultFn(() => new Date().toISOString()),
+});

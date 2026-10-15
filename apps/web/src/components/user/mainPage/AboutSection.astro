@@ -20,11 +20,11 @@ const {
 
       <!-- Text -->
       <div class="flex w-full flex-col justify-center gap-9 py-8 md:w-1/2 md:py-0">
-        <h1 class="text-5xl font-bold text-[#FF6D33] md:text-7xl">
+        <h1 id="about-title" class="text-5xl font-bold text-[#FF6D33] md:text-7xl">
           Biz Kimik?
         </h1>
 
-        <p>
+        <p id="about-description">
           Yaradıcılıq, strategiya və yenilikçi yanaşmanı bir araya gətirərək, markalar üçün rəqəmsal dünyada yeni imkanlar yaradırıq. Tanıtım.az olaraq hər brendin özünəməxsus hekayəsi olduğuna inanır və bu hekayəni doğru auditoriyaya çatdırmaq üçün fərqli ideyalar üzərində çalışırıq.
 
      Məqsədimiz sadəcə görünürlük yaratmaq deyil, markalarla auditoriya arasında yadda qalan və uzunmüddətli əlaqələr qurmaqdır. Hər layihəyə fərdi yanaşaraq, ideyadan nəticəyə qədər markanın yanında oluruq.
@@ -37,6 +37,7 @@ const {
           <a
             href="#services-section"
             data-scroll="services-section"
+            id="about-button"
             class="flex w-fit items-center gap-2 rounded-lg text-md font-semibold text-[#FF6D33]"
           >
             Xidmətlərimiz
@@ -51,55 +52,84 @@ const {
       <div class="relative w-full aspect-[13/13] md:w-1/2 md:max-w-none">
 
         <!-- 1: top-left, meeting table -->
-        <img
+        <img data-about-image="0"
           src="/aboutUs/btl.png"
           alt=""
           class="absolute left-[13%] top-[5%] z-10 h-[32%] w-[33%] rotate-[-3deg] rounded-[8%] object-cover shadow-md"
         />
 
         <!-- 2: top-right, woman with phone -->
-        <img
+        <img data-about-image="1"
           src="/aboutUs/Content_Creation.png"
           alt=""
           class="absolute right-[14%] top-7 z-30 h-[35%] w-[32%] rotate-[3deg] rounded-[8%] object-cover shadow-md"
         />
 
         <!-- 3: left, flatlay (phone/earbuds/mug) -->
-        <img
+        <img data-about-image="2"
           src="/aboutUs/Digital_Marketing.png"
           alt=""
           class="absolute left-0 top-[33%] z-20 h-[31%] w-[30%] rotate-[5deg] rounded-[8%] object-cover shadow-md"
         />
 
         <!-- 4: CENTER — wide group meeting -->
-        <img
+        <img data-about-image="3"
           src="/aboutUs/Event_Org.png"
           alt=""
           class="absolute left-[26%] top-[31%] z-40 h-[31%] w-[50%] rotate-[1deg] rounded-[8%] object-cover shadow-md"
         />
 
         <!-- 5: right, woman standing in hallway -->
-        <img
+        <img data-about-image="4"
           src="/aboutUs/influecncer.png"
           alt=""
           class="absolute right-0 top-[31%] z-20 h-[30%] w-[30%] rotate-[-3deg] rounded-[8%] object-cover shadow-md"
         />
 
         <!-- 6: bottom-left, laptop with charts -->
-        <img
+        <img data-about-image="5"
           src="/aboutUs/Mail_Marketing.png"
           alt=""
           class="absolute left-[15%] top-[60%] z-41 h-[26%] w-[31%] rotate-[-2deg] rounded-[8%] object-cover shadow-md"
         />
 
         <!-- 7: bottom-right, two colleagues at table -->
-        <img
+        <img data-about-image="6"
           src="/aboutUs/Outdoor.png"
           alt=""
           class="absolute right-[12%] top-[59%] z-41 h-[31%] w-[35%] rotate-[2deg] rounded-[8%] object-cover shadow-md"
         />
 
       </div>
+
+      <script>
+        import { getAboutContent } from '../../../services/about.service';
+
+        const initAboutContent = () => {
+          if (document.documentElement.dataset.aboutInitialized === 'true') return;
+          document.documentElement.dataset.aboutInitialized = 'true';
+          void getAboutContent().then((content) => {
+            if (!content) return;
+            const title = document.getElementById('about-title');
+            const description = document.getElementById('about-description');
+            const button = document.getElementById('about-button');
+            if (title) title.textContent = content.title;
+            if (description) description.textContent = content.description;
+            if (button) button.textContent = content.buttonText;
+            document.querySelectorAll<HTMLImageElement>('[data-about-image]').forEach((image) => {
+              const item = content.images[Number(image.dataset.aboutImage)];
+              image.hidden = !item;
+              if (item) {
+                image.src = item.src;
+                image.alt = item.alt;
+              }
+            });
+          }).catch((error) => console.error('Failed to load About content', error));
+        };
+
+        initAboutContent();
+        document.addEventListener('astro:page-load', initAboutContent);
+      </script>
 
     </div>
   </section>
