@@ -8,9 +8,10 @@ export const PUT: APIRoute = async (context) => {
   try {
     const { DB } = env;
     const db = getDb(DB);
-    const id = parseInt(context.params.id as string);
+    const key = context.params.id;
+    if (!key) return new Response(JSON.stringify({ error: 'Invalid translation key' }), { status: 400 });
     const body = await context.request.json();
-    const result = await db.update(schema.translations).set({...body, updatedAt: new Date().toISOString()}).where(eq(schema.translations.id, id)).returning();
+    const result = await db.update(schema.translations).set({ az: String(body.az ?? ''), ru: String(body.ru ?? ''), en: String(body.en ?? ''), updatedAt: new Date().toISOString()}).where(eq(schema.translations.key, key)).returning();
     if (result.length === 0) return new Response(JSON.stringify({ error: 'Not found' }), { status: 404 });
     return new Response(JSON.stringify(result[0]), { status: 200, headers: { 'Content-Type': 'application/json' } });
   } catch (error: any) {
@@ -22,8 +23,9 @@ export const DELETE: APIRoute = async (context) => {
   try {
     const { DB } = env;
     const db = getDb(DB);
-    const id = parseInt(context.params.id as string);
-    await db.delete(schema.translations).where(eq(schema.translations.id, id));
+    const key = context.params.id;
+    if (!key) return new Response(JSON.stringify({ error: 'Invalid translation key' }), { status: 400 });
+    await db.delete(schema.translations).where(eq(schema.translations.key, key));
     return new Response(JSON.stringify({ success: true }), { status: 200, headers: { 'Content-Type': 'application/json' } });
   } catch (error: any) {
     return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { 'Content-Type': 'application/json' } });

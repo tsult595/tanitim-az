@@ -26,18 +26,18 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       <div class="rounded-2xl border border-slate-200 bg-white p-6">
         <div class="mb-4 flex items-center justify-between">
-          <div><h2 class="font-semibold text-slate-900">Şəkillər</h2><p class="text-sm text-slate-500">URL və alt mətnini dəyişə və silə bilərsiniz.</p></div>
+          <div><h2 class="font-semibold text-slate-900">Şəkillər</h2><p class="text-sm text-slate-500">Kompüterdən şəkil seçin və ya URL daxil edin.</p></div>
           <button type="button" id="add-image" class="rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-white">Şəkil əlavə et</button>
         </div>
         <div id="about-images" class="space-y-3"></div>
       </div>
 
-      <p id="about-error" class="hidden text-sm text-red-600"></p>
+      <p id="about-error" class="hidden text-sm text-red-600" role="alert"></p>
       <div class="flex items-center justify-end gap-3">
-        <span id="about-success" class="hidden text-sm text-green-600">Yadda saxlanıldı</span>
-        <button type="submit" class="rounded-lg bg-[#FE7930] px-6 py-2.5 text-sm font-semibold text-white">Yadda saxla</button>
+        <button id="about-submit" type="submit" class="rounded-lg bg-[#FE7930] px-6 py-2.5 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60">Yadda saxla</button>
       </div>
     </form>
+    <div id="about-toast" role="status" aria-live="polite" class="pointer-events-none fixed bottom-6 right-6 z-50 hidden rounded-xl px-4 py-3 text-sm font-medium shadow-lg"></div>
   </div>
 </AdminLayout>
 
@@ -53,16 +53,28 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     const description = document.getElementById('about-description') as HTMLTextAreaElement;
     const buttonText = document.getElementById('about-button-text') as HTMLInputElement;
     const error = document.getElementById('about-error');
-    const success = document.getElementById('about-success');
+    const submitButton = document.getElementById('about-submit') as HTMLButtonElement | null;
+    const toast = document.getElementById('about-toast');
     let images: AboutImage[] = [];
+    let saving = false;
+    const notify = (message: string, type: 'success' | 'error') => {
+      if (!toast) return;
+      toast.textContent = message;
+      toast.className = `pointer-events-none fixed bottom-6 right-6 z-50 rounded-xl px-4 py-3 text-sm font-medium shadow-lg ${type === 'success' ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white'}`;
+      window.setTimeout(() => toast.classList.add('hidden'), 4500);
+    };
     const showError = (message: string, cause?: unknown) => {
       if (cause) console.error(cause);
-      error!.textContent = message;
-      error!.classList.remove('hidden');
+      if (error) {
+        error.textContent = message;
+        error.classList.remove('hidden');
+      }
+      notify(message, 'error');
     };
     const renderImages = () => {
       imagesElement.innerHTML = images.map((image, index) => `
         <div class="grid gap-3 rounded-xl border border-slate-200 p-3 sm:grid-cols-[1fr_1fr_auto]">
+          <input data-image-file="${index}" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
           <input data-image-src="${index}" value="${image.src.replace(/"/g, '&quot;')}" placeholder="/aboutUs/example.png" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
           <input data-image-alt="${index}" value="${image.alt.replace(/"/g, '&quot;')}" placeholder="Alt text" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
           <button type="button" data-remove-image="${index}" class="rounded-lg px-3 py-2 text-sm text-red-600 hover:bg-red-50">Sil</button>
@@ -86,13 +98,38 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     });
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
+      if (saving || !form.reportValidity()) return;
+      saving = true;
+      if (submitButton) { submitButton.disabled = true; submitButton.textContent = 'Yadda saxlanılır…'; }
       error?.classList.add('hidden');
-      success?.classList.add('hidden');
+      const uploadedKeys: string[] = [];
       try {
-        await updateAboutContent({ title: title.value, description: description.value, buttonText: buttonText.value, images });
-        success?.classList.remove('hidden');
+        const files = [...imagesElement.querySelectorAll<HTMLInputElement>('[data-image-file]')];
+        for (const fileInput of files) {
+          const file = fileInput.files?.[0];
+          if (!file) continue;
+          const uploadData = new FormData();
+          uploadData.append('file', file);
+          const response = await fetch('/api/upload', { method: 'POST', body: uploadData });
+          if (!response.ok) throw new Error(`About image upload failed: ${response.status}`);
+          const uploaded = await response.json() as { url?: string; key?: string };
+          const index = Number(fileInput.dataset.imageFile);
+          if (!uploaded.url) throw new Error('Upload response did not include an image URL');
+          if (uploaded.key) uploadedKeys.push(uploaded.key);
+          images[index].src = uploaded.url;
+        }
+        const saved = await updateAboutContent({ title: title.value, description: description.value, buttonText: buttonText.value, images });
+        images = saved.images;
+        renderImages();
+        notify('About məlumatları yadda saxlanıldı.', 'success');
       } catch (cause) {
+        await Promise.all(uploadedKeys.map((key) => fetch('/api/upload', {
+          method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key }),
+        }).catch(() => undefined)));
         showError('About məlumatlarını saxlamaq mümkün olmadı.', cause);
+      } finally {
+        saving = false;
+        if (submitButton) { submitButton.disabled = false; submitButton.textContent = 'Yadda saxla'; }
       }
     });
     void getAboutContent().then((content) => {

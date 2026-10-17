@@ -3,10 +3,13 @@ import Header from '../components/user/mainPage/Header.astro';
 import '../styles/global.css';
 
 const { title = "Tanitim.az", showHeader = true } = Astro.props;
+const locale = ['az', 'ru', 'en'].includes(Astro.url.searchParams.get('lang') ?? '')
+  ? Astro.url.searchParams.get('lang')!
+  : 'az';
 ---
 
 <!DOCTYPE html>
-<html lang="az">
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,9 +17,47 @@ const { title = "Tanitim.az", showHeader = true } = Astro.props;
     <title>{title}</title>
   </head>
   <body class="bg-white text-gray-900 antialiased min-h-screen">
-    {showHeader && <Header class="w-full pointer-events-auto fixed top-0 right-0 left-0 z-50" />}
+    {showHeader && <Header class="w-full pointer-events-auto fixed top-0 right-0 left-0 z-50" locale={locale} />}
     <div class="site-shell flex min-h-screen flex-col">
       <slot />
     </div>
+    <script define:vars={{ locale }}>
+      const defaults = {
+        'header.about': { az: 'Haqqımızda', ru: 'О нас', en: 'About us' },
+        'header.services': { az: 'Xidmətlər', ru: 'Услуги', en: 'Services' },
+        'header.clients': { az: 'Müştərilər', ru: 'Клиенты', en: 'Clients' },
+        'header.products': { az: 'Məhsullar', ru: 'Продукты', en: 'Products' },
+        'header.contact': { az: 'Əlaqə', ru: 'Контакты', en: 'Contact' },
+        'header.blog': { az: 'Blog', ru: 'Блог', en: 'Blog' },
+        'about.title': { az: 'Biz Kimik?', ru: 'Кто мы?', en: 'Who are we?' },
+        'about.description': { az: 'Yaradıcılıq, strategiya və yenilikçi yanaşmanı bir araya gətirərək, markalar üçün rəqəmsal dünyada yeni imkanlar yaradırıq.', ru: 'Мы объединяем креативность, стратегию и инновации, чтобы создавать для брендов новые возможности в цифровом мире.', en: 'We combine creativity, strategy, and innovation to create new digital opportunities for brands.' },
+        'about.button': { az: 'Xidmətlərimiz', ru: 'Наши услуги', en: 'Our services' },
+        'footer.company': { az: 'Şirkət', ru: 'Компания', en: 'Company' },
+        'footer.resources': { az: 'Resurslar', ru: 'Ресурсы', en: 'Resources' },
+        'footer.description': { az: 'Yaradıcı və nəticəyönümlü kommunikasiya həlləri.', ru: 'Креативные коммуникационные решения с измеримым результатом.', en: 'Creative communication solutions with measurable results.' },
+        'footer.about': { az: 'Haqqımızda', ru: 'О нас', en: 'About us' },
+        'footer.services': { az: 'Xidmətlər', ru: 'Услуги', en: 'Services' },
+        'footer.contact': { az: 'Əlaqə', ru: 'Контакты', en: 'Contact' },
+        'footer.blog': { az: 'Bloq', ru: 'Блог', en: 'Blog' },
+        'footer.faq': { az: 'FAQ', ru: 'FAQ', en: 'FAQ' },
+        'footer.privacy': { az: 'Məxfilik', ru: 'Конфиденциальность', en: 'Privacy' },
+        'services.title': { az: 'Xidmətlərimiz', ru: 'Наши услуги', en: 'Our services' },
+        'services.description': { az: 'Xidmətlərimiz', ru: 'Наши услуги', en: 'Our services' },
+        'clients.title': { az: 'Müştərilərimiz', ru: 'Наши клиенты', en: 'Our clients' },
+        'products.title': { az: 'Məhsullarımız', ru: 'Наши продукты', en: 'Our products' },
+        'contact.title': { az: 'Əlaqə', ru: 'Контакты', en: 'Contact' },
+      };
+      const applyTranslations = (records = []) => {
+        const dictionary = Object.fromEntries(records.map((record) => [record.key, record]));
+        document.querySelectorAll('[data-i18n]').forEach((element) => {
+          const key = element.getAttribute('data-i18n');
+          const values = dictionary[key] || defaults[key];
+          const value = values?.[locale] || values?.az;
+          if (value) element.textContent = value;
+        });
+      };
+      applyTranslations();
+      fetch('/api/translations').then((response) => response.ok ? response.json() : []).then(applyTranslations).catch(() => undefined);
+    </script>
   </body>
 </html>

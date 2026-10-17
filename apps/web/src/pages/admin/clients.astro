@@ -16,16 +16,18 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </div>
 
     <div id="logos-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5"></div>
+    <p id="logos-loading" class="py-20 text-center text-slate-400">Loqolar yüklənir...</p>
     <div id="logos-empty" class="hidden text-center py-20 text-slate-400 border border-dashed border-slate-200 rounded-2xl">
       Hələ heç bir loqo əlavə edilməyib
     </div>
-    <p id="logos-error" class="hidden p-5 text-red-500"></p>
+    <p id="logos-error" class="hidden p-5 text-red-500" role="alert"></p>
+    <p id="logos-success" class="hidden px-5 pb-5 text-emerald-600" role="status" aria-live="polite"></p>
   </div>
 
   <div id="logo-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40 backdrop-blur-sm p-4">
     <div class="bg-white rounded-2xl w-full max-w-md p-6 sm:p-8">
       <div class="flex items-center justify-between mb-6">
-        <h2 class="text-lg font-bold text-slate-900">Yeni Loqo</h2>
+        <h2 id="modal-title" class="text-lg font-bold text-slate-900">Yeni Loqo</h2>
         <button type="button" id="close-modal" class="text-slate-400 hover:text-slate-700 cursor-pointer border-none bg-transparent text-xl leading-none" aria-label="Bağla">✕</button>
       </div>
       <form id="logo-form" class="flex flex-col gap-4">
@@ -34,8 +36,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           <input type="text" id="logo-name" required class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FE7930]/40 focus:border-[#FE7930]" placeholder="Məs: Nike" />
         </div>
         <div>
-          <label for="logo-image" class="block text-sm font-medium text-slate-700 mb-1.5">Loqo (URL)</label>
-          <input type="url" id="logo-image" required class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FE7930]/40 focus:border-[#FE7930]" placeholder="/logos/example.png" />
+          <label for="logo-file" class="block text-sm font-medium text-slate-700 mb-1.5">Loqo faylı</label>
+          <input type="file" id="logo-file" accept="image/png,image/jpeg,image/webp,image/avif,image/gif,image/svg+xml" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#FE7930]/40 focus:border-[#FE7930]" />
+          <p class="text-xs text-slate-400 mt-1">Kompüterdən yeni loqo seçin və ya aşağıda URL yazın.</p>
+        </div>
+        <div>
+          <label for="logo-image" class="block text-sm font-medium text-slate-700 mb-1.5">Loqo URL-i</label>
+          <input type="url" id="logo-image" class="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#FE7930]/40 focus:border-[#FE7930]" placeholder="/logos/example.png" />
         </div>
         <div class="flex items-center justify-end gap-3 mt-2">
           <button type="button" id="cancel-modal" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-100 cursor-pointer border-none bg-transparent">Ləğv et</button>
@@ -51,6 +58,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     createClient,
     deleteClient,
     getClients,
+    uploadClientLogo,
     updateClient,
     type Client,
   } from '../../services/clients.service';
@@ -59,14 +67,21 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     const grid = document.getElementById('logos-grid');
     const empty = document.getElementById('logos-empty');
     const errorElement = document.getElementById('logos-error');
+    const successElement = document.getElementById('logos-success');
+    const loading = document.getElementById('logos-loading');
     const modal = document.getElementById('logo-modal');
     const form = document.getElementById('logo-form') as HTMLFormElement | null;
     const nameInput = document.getElementById('logo-name') as HTMLInputElement | null;
     const imageInput = document.getElementById('logo-image') as HTMLInputElement | null;
-    if (!grid || !empty || !errorElement || !form || form.dataset.initialized === 'true') return;
+    const fileInput = document.getElementById('logo-file') as HTMLInputElement | null;
+    const modalTitle = document.getElementById('modal-title');
+    const submitButton = form?.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+    if (!grid || !empty || !errorElement || !loading || !form || form.dataset.initialized === 'true') return;
     form.dataset.initialized = 'true';
 
     let clients: Client[] = [];
+    let editingId: number | null = null;
+    let saving = false;
     const escape = (value: string) => value.replace(/[&<>"']/g, (char) => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;',
     }[char] ?? char));
@@ -75,11 +90,21 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       errorElement.textContent = message;
       errorElement.classList.remove('hidden');
     };
+    const showSuccess = (message: string) => {
+      if (!successElement) return;
+      successElement.textContent = message;
+      successElement.classList.remove('hidden');
+      window.setTimeout(() => successElement.classList.add('hidden'), 4000);
+    };
     const render = () => {
+      loading.classList.add('hidden');
       empty.classList.toggle('hidden', clients.length > 0);
       grid.innerHTML = clients.map((client, index) => `
         <div data-client-id="${client.id}" data-client-name="${escape(client.name)}" class="group relative bg-white rounded-2xl border border-slate-200 p-6 flex flex-col items-center gap-4 hover:border-slate-300 transition-colors">
-          <button type="button" class="delete-btn absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-400 hover:text-red-500 opacity-0 group-hover:opacity-100 cursor-pointer" aria-label="Sil">✕</button>
+          <div class="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100">
+            <button type="button" class="edit-btn w-7 h-7 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-400 hover:text-[#FE7930] cursor-pointer" aria-label="Redaktə et">✎</button>
+            <button type="button" class="delete-btn w-7 h-7 flex items-center justify-center rounded-full bg-white border border-slate-200 text-slate-400 hover:text-red-500 cursor-pointer" aria-label="Sil">✕</button>
+          </div>
           <div class="h-16 flex items-center justify-center w-full"><img src="${escape(client.logoUrl)}" alt="${escape(client.name)}" class="max-h-16 max-w-full object-contain grayscale group-hover:grayscale-0 transition-all" /></div>
           <p class="text-xs font-medium text-slate-500 truncate w-full text-center">${escape(client.name)}</p>
           <div class="flex items-center gap-1 mt-1">
@@ -93,10 +118,22 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       modal?.classList.add('hidden');
       modal?.classList.remove('flex');
       form.reset();
+      editingId = null;
+      if (modalTitle) modalTitle.textContent = 'Yeni Loqo';
+      if (submitButton) submitButton.textContent = 'Əlavə et';
     };
-    document.getElementById('open-add-modal')?.addEventListener('click', () => {
+    const openEditor = (client?: Client) => {
+      editingId = client?.id ?? null;
+      if (modalTitle) modalTitle.textContent = client ? 'Loqonu redaktə et' : 'Yeni Loqo';
+      if (submitButton) submitButton.textContent = client ? 'Yadda saxla' : 'Əlavə et';
+      if (nameInput) nameInput.value = client?.name ?? '';
+      if (imageInput) imageInput.value = client?.logoUrl ?? '';
+      if (fileInput) fileInput.value = '';
       modal?.classList.remove('hidden');
       modal?.classList.add('flex');
+    };
+    document.getElementById('open-add-modal')?.addEventListener('click', () => {
+      openEditor();
     });
     document.getElementById('close-modal')?.addEventListener('click', closeModal);
     document.getElementById('cancel-modal')?.addEventListener('click', closeModal);
@@ -107,11 +144,14 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       const id = Number(card.dataset.clientId);
       const index = clients.findIndex((client) => client.id === id);
       try {
-        if (target.closest('.delete-btn')) {
+        if (target.closest('.edit-btn')) {
+          openEditor(clients[index]);
+        } else if (target.closest('.delete-btn')) {
           if (!confirm(`"${card.dataset.clientName ?? 'Bu loqo'}" silinsin?`)) return;
           await deleteClient(id);
           clients = clients.filter((client) => client.id !== id);
           render();
+          showSuccess('Loqo silindi.');
         } else if (target.closest('.move-left-btn') && index > 0) {
           [clients[index - 1], clients[index]] = [clients[index], clients[index - 1]];
           await Promise.all(clients.map((client, order) => updateClient(client.id, { sortOrder: order })));
@@ -127,22 +167,47 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     });
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
-      const name = nameInput?.value.trim();
-      const logoUrl = imageInput?.value.trim();
-      if (!name || !logoUrl) return;
+      const name = nameInput?.value.trim() ?? '';
+      let logoUrl = imageInput?.value.trim() ?? '';
+      const selectedFile = fileInput?.files?.[0];
+      if (saving || !name || (!logoUrl && !selectedFile)) {
+        if (!name || (!logoUrl && !selectedFile)) showError('Şirkət adı və loqo faylı və ya URL-i tələb olunur.');
+        return;
+      }
+      saving = true;
+      if (submitButton) { submitButton.disabled = true; submitButton.textContent = 'Yadda saxlanılır…'; }
+      let uploadedKey: string | undefined;
       try {
-        const client = await createClient({ name, logoUrl });
-        clients = [...clients, client];
+        if (selectedFile) {
+          const uploaded = await uploadClientLogo(selectedFile);
+          logoUrl = uploaded.url;
+          uploadedKey = uploaded.key;
+        }
+        if (editingId !== null) {
+          const client = await updateClient(editingId, { name, logoUrl });
+          clients = clients.map((item) => item.id === editingId ? client : item);
+        } else {
+          const client = await createClient({ name, logoUrl });
+          clients = [...clients, client];
+        }
         render();
         closeModal();
+        showSuccess('Loqo yadda saxlanıldı.');
       } catch (error) {
-        showError('Loqo əlavə etmək mümkün olmadı.', error);
+        if (uploadedKey) await fetch('/api/upload', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: uploadedKey }) }).catch(() => undefined);
+        showError('Loqonu yadda saxlamaq mümkün olmadı.', error);
+      } finally {
+        saving = false;
+        if (submitButton) { submitButton.disabled = false; submitButton.textContent = editingId === null ? 'Əlavə et' : 'Yadda saxla'; }
       }
     });
     void getClients().then((result) => {
       clients = result.sort((a, b) => a.sortOrder - b.sortOrder);
       render();
-    }).catch((error) => showError('Loqoları yükləmək mümkün olmadı.', error));
+    }).catch((error) => {
+      loading.classList.add('hidden');
+      showError('Loqoları yükləmək mümkün olmadı.', error);
+    });
   };
 
   initClientsAdmin();

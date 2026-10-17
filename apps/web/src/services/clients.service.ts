@@ -47,3 +47,15 @@ export const updateClient = (id: number, data: Partial<Client>) =>
 
 export const deleteClient = (id: number) =>
   request<{ success: boolean }>(`/${id}`, { method: 'DELETE' });
+
+export const uploadClientLogo = async (file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  const response = await fetch('/api/upload', { method: 'POST', body: formData });
+
+  if (!response.ok) {
+    throw new Error(`Client logo upload failed: ${response.status}`);
+  }
+
+  return (await response.json()) as { url: string; key: string };
+};

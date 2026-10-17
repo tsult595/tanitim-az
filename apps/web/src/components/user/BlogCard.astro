@@ -5,6 +5,7 @@ interface Props {
   date?: string;
   title?: string;
   description?: string;
+  href?: string;
  
 }
 
@@ -14,6 +15,7 @@ const {
   date = "5 Dəqİqə",
   title = "Без названия",
   description = "Описание отсутствует",
+  href = '/user/blogs',
 
 } = Astro.props;
 
@@ -65,7 +67,7 @@ const {
     <!-- Link (прижат к самому низу за счет flex-col) -->
     <div class="pt-2">
       <a
-        href='/user/blogsDetail'
+        href={href}
         class="inline-flex items-center gap-2 text-xs font-bold tracking-widest text-[#FE7930] transition-all hover:gap-3"
       >
         MƏQALƏNİ OXU

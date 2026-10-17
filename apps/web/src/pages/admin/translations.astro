@@ -1,22 +1,30 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
-import getDb from '../../lib/db';
+import { env } from 'cloudflare:workers';
+import { getDb, schema } from '../../lib/db';
 
 export const prerender = false;
 
-// Mock data, real data will come from getDb()
-const translations = [];
+const translations = env.DB ? await getDb(env.DB).select().from(schema.translations) : [];
 ---
 
 <AdminLayout title="Tərcümələr">
     <div class="mb-6 flex justify-between items-center">
-        <h2 class="text-lg font-medium text-gray-800">Tərcümələr İdarəetmə</h2>
+        <div><h2 class="text-lg font-medium text-gray-800">Tərcümələr İdarəetmə</h2><p class="mt-1 text-sm text-gray-500">Hər bölmə üçün AZ, RU və EN mətnini eyni yerdə redaktə edin.</p></div>
         <div class="flex gap-4">
             <input type="text" id="search-input" placeholder="Açar sözə görə axtar..." class="border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-[#F0692A] focus:border-[#F0692A]" />
             <button id="add-btn" class="bg-[#F0692A] hover:bg-orange-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
                 + Yeni Tərcümə
             </button>
         </div>
+    </div>
+
+    <div class="mb-5 flex flex-wrap gap-2" role="tablist" aria-label="Tərcümə bölmələri">
+        <button type="button" data-section="all" class="section-filter rounded-full bg-orange-500 px-3 py-1.5 text-sm font-semibold text-white">Hamısı</button>
+        <button type="button" data-section="header" class="section-filter rounded-full border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600">Header</button>
+        <button type="button" data-section="about" class="section-filter rounded-full border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600">About section</button>
+        <button type="button" data-section="footer" class="section-filter rounded-full border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600">Footer</button>
+        <button type="button" data-section="other" class="section-filter rounded-full border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600">Digər</button>
     </div>
 
     <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden">
@@ -38,7 +46,7 @@ const translations = [];
                         </tr>
                     ) : (
                         translations.map((t) => (
-                            <tr class="hover:bg-gray-50 search-row" data-key={t.key}>
+                            <tr class="hover:bg-gray-50 search-row" data-key={t.key} data-section={['header', 'about', 'footer'].includes(t.key.split('.')[0]) ? t.key.split('.')[0] : 'other'}>
                                 <td class="px-6 py-4 text-sm font-medium text-gray-900 break-all">{t.key}</td>
                                 <td class="px-6 py-4 text-sm text-gray-500 break-words">{t.az}</td>
                                 <td class="px-6 py-4 text-sm text-gray-500 break-words">{t.en}</td>
@@ -112,20 +120,30 @@ const translations = [];
 </AdminLayout>
 
 <script>
+    let activeSection = 'all';
+    const applyFilters = () => {
+        const query = (document.getElementById('search-input') as HTMLInputElement | null)?.value.toLowerCase() ?? '';
+        document.querySelectorAll<HTMLElement>('.search-row').forEach((row) => {
+            const matchesSearch = row.innerText.toLowerCase().includes(query);
+            const matchesSection = activeSection === 'all' || row.dataset.section === activeSection;
+            row.style.display = matchesSearch && matchesSection ? '' : 'none';
+        });
+    };
     // Search functionality
     const searchInput = document.getElementById('search-input') as HTMLInputElement;
     searchInput?.addEventListener('input', (e) => {
         const query = (e.target as HTMLInputElement).value.toLowerCase();
-        document.querySelectorAll('.search-row').forEach((row) => {
-            const key = row.getAttribute('data-key')?.toLowerCase() || '';
-            const rowText = (row as HTMLElement).innerText.toLowerCase();
-            if (rowText.includes(query) || key.includes(query)) {
-                (row as HTMLElement).style.display = '';
-            } else {
-                (row as HTMLElement).style.display = 'none';
-            }
-        });
+        applyFilters();
     });
+    document.querySelectorAll<HTMLButtonElement>('.section-filter').forEach((button) => button.addEventListener('click', () => {
+        activeSection = button.dataset.section ?? 'all';
+        document.querySelectorAll<HTMLButtonElement>('.section-filter').forEach((item) => {
+            item.className = item === button
+                ? 'section-filter rounded-full bg-orange-500 px-3 py-1.5 text-sm font-semibold text-white'
+                : 'section-filter rounded-full border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600';
+        });
+        applyFilters();
+    }));
 
     const modal = document.getElementById('form-modal');
     const closeBtn = document.getElementById('close-modal');
@@ -185,6 +203,22 @@ const translations = [];
         } catch (err) {
             console.error(err);
         }
+    });
+
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const row = (e.currentTarget as HTMLElement).closest('tr');
+            const cells = row?.querySelectorAll('td');
+            if (!cells || cells.length < 4) return;
+            openModal(true);
+            if (keyInput) keyInput.value = cells[0].textContent?.trim() ?? '';
+            const az = document.getElementById('az') as HTMLTextAreaElement | null;
+            const en = document.getElementById('en') as HTMLTextAreaElement | null;
+            const ru = document.getElementById('ru') as HTMLTextAreaElement | null;
+            if (az) az.value = cells[1].textContent?.trim() ?? '';
+            if (en) en.value = cells[2].textContent?.trim() ?? '';
+            if (ru) ru.value = cells[3].textContent?.trim() ?? '';
+        });
     });
 
     document.querySelectorAll('.delete-btn').forEach(btn => {

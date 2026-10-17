@@ -2,7 +2,7 @@ export const prerender = false;
 import type { APIRoute } from 'astro';
 import { env } from 'cloudflare:workers';
 import { getDb, schema } from '../../../lib/db';
-import { eq } from 'drizzle-orm';
+import { asc, eq } from 'drizzle-orm';
 
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), {
@@ -31,7 +31,7 @@ function serviceValues(body: unknown) {
     actionText: typeof input.actionText === 'string' ? input.actionText : '',
     sortOrder: typeof input.sortOrder === 'number' ? input.sortOrder : 0,
     isActive: input.isActive !== false,
-    lang: typeof input.lang === 'string' ? input.lang : 'az',
+    lang: typeof input.lang === 'string' && ['az', 'ru', 'en'].includes(input.lang) ? input.lang : 'az',
   };
 }
 
@@ -41,7 +41,7 @@ export const GET: APIRoute = async (context) => {
     const db = getDb(DB);
     const lang = context.url.searchParams.get('lang');
     
-    let query = db.select().from(schema.services);
+    let query = db.select().from(schema.services).orderBy(asc(schema.services.sortOrder), asc(schema.services.id));
     if (lang) {
       query = query.where(eq(schema.services.lang, lang));
     }

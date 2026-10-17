@@ -28,13 +28,20 @@ export const PUT: APIRoute = async (context) => {
       buttonText?: string;
       images?: Array<{ src: string; alt: string }>;
     };
+    const title = body.title?.trim();
+    const description = body.description?.trim();
+    const buttonText = body.buttonText?.trim();
+    if (!title || !description || !buttonText) return json({ error: 'Title, description, and button text are required' }, 400);
+    if (!Array.isArray(body.images) || body.images.some((image) => !image || !image.src?.trim() || typeof image.alt !== 'string')) {
+      return json({ error: 'Each image needs a source and alt text' }, 400);
+    }
     const db = getDb(env.DB);
     const existing = await db.select().from(schema.aboutContent).limit(1);
     const values = {
-      title: body.title?.trim() || 'Biz Kimik?',
-      description: body.description?.trim() || '',
-      buttonText: body.buttonText?.trim() || 'Xidmətlərimiz',
-      images: JSON.stringify(body.images ?? []),
+      title,
+      description,
+      buttonText,
+      images: JSON.stringify(body.images),
       updatedAt: new Date().toISOString(),
     };
     const content = existing[0]

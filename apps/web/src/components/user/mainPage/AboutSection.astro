@@ -20,11 +20,11 @@ const {
 
       <!-- Text -->
       <div class="flex w-full flex-col justify-center gap-9 py-8 md:w-1/2 md:py-0">
-        <h1 id="about-title" class="text-5xl font-bold text-[#FF6D33] md:text-7xl">
+        <h1 id="about-title" data-i18n="about.title" class="text-5xl font-bold text-[#FF6D33] md:text-7xl">
           Biz Kimik?
         </h1>
 
-        <p id="about-description">
+        <p id="about-description" data-i18n="about.description">
           Yaradıcılıq, strategiya və yenilikçi yanaşmanı bir araya gətirərək, markalar üçün rəqəmsal dünyada yeni imkanlar yaradırıq. Tanıtım.az olaraq hər brendin özünəməxsus hekayəsi olduğuna inanır və bu hekayəni doğru auditoriyaya çatdırmaq üçün fərqli ideyalar üzərində çalışırıq.
 
      Məqsədimiz sadəcə görünürlük yaratmaq deyil, markalarla auditoriya arasında yadda qalan və uzunmüddətli əlaqələr qurmaqdır. Hər layihəyə fərdi yanaşaraq, ideyadan nəticəyə qədər markanın yanında oluruq.
@@ -37,7 +37,7 @@ const {
           <a
             href="#services-section"
             data-scroll="services-section"
-            id="about-button"
+            id="about-button" data-i18n="about.button"
             class="flex w-fit items-center gap-2 rounded-lg text-md font-semibold text-[#FF6D33]"
           >
             Xidmətlərimiz
@@ -108,14 +108,19 @@ const {
         const initAboutContent = () => {
           if (document.documentElement.dataset.aboutInitialized === 'true') return;
           document.documentElement.dataset.aboutInitialized = 'true';
+          const locale = new URLSearchParams(window.location.search).get('lang') ?? 'az';
           void getAboutContent().then((content) => {
             if (!content) return;
             const title = document.getElementById('about-title');
             const description = document.getElementById('about-description');
             const button = document.getElementById('about-button');
-            if (title) title.textContent = content.title;
-            if (description) description.textContent = content.description;
-            if (button) button.textContent = content.buttonText;
+            // Images are language-independent CMS assets and must remain identical
+            // after a locale change. Text comes from translations for RU and EN.
+            if (locale === 'az') {
+              if (title) title.textContent = content.title;
+              if (description) description.textContent = content.description;
+              if (button) button.textContent = content.buttonText;
+            }
             document.querySelectorAll<HTMLImageElement>('[data-about-image]').forEach((image) => {
               const item = content.images[Number(image.dataset.aboutImage)];
               image.hidden = !item;

@@ -1,0 +1,17 @@
+---
+import { and, eq } from 'drizzle-orm';
+import { env } from 'cloudflare:workers';
+import { getDb, schema } from '../../../lib/db';
+import UserLayout from '../../../layouts/UserLayout.astro';
+export const prerender = false;
+const lang = ['az', 'ru', 'en'].includes(Astro.url.searchParams.get('lang') ?? '') ? Astro.url.searchParams.get('lang')! : 'az';
+const slug = Astro.params.slug ?? '';
+const db = env.DB ? getDb(env.DB) : null;
+const sourcePost = db ? (await db.select().from(schema.blogs).where(and(eq(schema.blogs.slug, slug), eq(schema.blogs.isPublished, true))))[0] : undefined;
+const localizedPost = sourcePost && db
+  ? (await db.select().from(schema.blogs).where(and(eq(schema.blogs.translationKey, sourcePost.translationKey), eq(schema.blogs.lang, lang), eq(schema.blogs.isPublished, true))))[0]
+  : undefined;
+const post = localizedPost ?? sourcePost;
+if (!post) return new Response('Not found', { status: 404 });
+---
+<UserLayout title={post.seoTitle || post.title}><article class="mx-auto mt-24 max-w-3xl px-4 py-12"><h1 class="text-4xl font-bold text-slate-900">{post.title}</h1>{post.coverImage && <img src={post.coverImage} alt="" class="mt-8 max-h-120 w-full rounded-2xl object-cover" />}<div class="mt-8 whitespace-pre-wrap leading-8 text-slate-700">{post.content}</div></article></UserLayout>
